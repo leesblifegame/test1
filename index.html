@@ -2,1897 +2,525 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>게임 화면 기획서 — 월드맵 & 본거지</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>아쿠아 서바이벌</title>
 <style>
-:root {
-  --c0:#020912;--c1:#04101f;--c2:#07182e;--c3:#0a1f3a;
-  --ocean:#3ab8f5;--biolum:#00e8c8;--amber:#f6ca45;
-  --coral:#f87272;--jade:#35d49c;--violet:#7c8fff;--rose:#ff7eb3;
-  --oa:rgba(58,184,245,0.11);--ba:rgba(0,232,200,0.09);
-  --aa:rgba(246,202,69,0.10);--ca:rgba(248,114,114,0.10);--ja:rgba(53,212,156,0.10);
-  --bdr:rgba(58,184,245,0.09);--bdrm:rgba(58,184,245,0.18);--bdrh:rgba(58,184,245,0.32);
-  --t1:#dff0ff;--t2:#6da8cb;--t3:#4d85a8;
-  --nav-h:60px;--sidebar-w:230px;--r:12px;--rl:16px;--rxl:20px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--c0);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 90% 50% at 50% -5%,rgba(58,184,245,.08) 0%,transparent 60%),
-  radial-gradient(ellipse 55% 50% at 5% 100%,rgba(0,232,200,.06) 0%,transparent 55%),
-  radial-gradient(ellipse 40% 35% at 95% 10%,rgba(246,202,69,.04) 0%,transparent 50%);}
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:repeating-linear-gradient(180deg,transparent 0px,transparent 96px,rgba(58,184,245,.010) 96px,rgba(58,184,245,.010) 97px);}
-
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);
-  background:rgba(2,9,18,.88);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);
-  border-bottom:1px solid var(--bdrm);z-index:100;display:flex;align-items:center;padding:0 32px;gap:0;}
-.nav-brand{display:flex;align-items:center;gap:10px;margin-right:24px;flex-shrink:0;}
-.nav-brand-icon{width:32px;height:32px;
-  background:linear-gradient(135deg,rgba(246,202,69,.15),rgba(248,114,114,.1)) padding-box,
-             linear-gradient(135deg,var(--amber),var(--coral)) border-box;
-  border:1px solid transparent;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;
-  filter:drop-shadow(0 0 6px rgba(246,202,69,.5));}
-.nav-brand-text{display:flex;flex-direction:column;gap:1px;}
-.nav-brand-name{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;}
-.nav-brand-sub{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;color:var(--t3);letter-spacing:.06em;}
-.nav-divider{width:1px;height:28px;background:var(--bdrm);margin:0 20px;flex-shrink:0;}
-.nav-page-title{font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:var(--t1);letter-spacing:-.02em;white-space:nowrap;}
-.nav-tabs{display:flex;align-items:stretch;height:var(--nav-h);flex:1;margin-left:16px;}
-.nav-tab{position:relative;display:flex;align-items:center;gap:6px;padding:0 18px;
-  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;color:var(--t2);
-  background:none;border:none;cursor:pointer;transition:color .15s;white-space:nowrap;user-select:none;}
-.nav-tab:hover{color:var(--t1);}
-.nav-tab.active{color:var(--t1);background:rgba(58,184,245,.04);}
-.nav-tab.active::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;
-  background:linear-gradient(90deg,var(--ocean),var(--biolum));border-radius:2px 2px 0 0;}
-.nav-end{margin-left:auto;display:flex;align-items:center;gap:12px;}
-.nav-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(246,202,69,.06);
-  border:1px solid rgba(246,202,69,.2);border-radius:20px;font-size:11px;color:var(--amber);white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.05em;}
-.nav-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2);padding-left:16px;border-left:1px solid var(--bdr);}
-.nav-status-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);
-  box-shadow:0 0 6px rgba(246,202,69,.6);animation:pd 2.5s ease-in-out infinite;}
-@keyframes pd{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(246,202,69,.5);}50%{opacity:.6;box-shadow:0 0 0 4px rgba(246,202,69,0);}}
-
-/* SIDEBAR */
-.sidebar{position:fixed;top:var(--nav-h);left:0;width:var(--sidebar-w);height:calc(100vh - var(--nav-h));
-  background:rgba(2,9,18,.92);backdrop-filter:blur(20px);border-right:1px solid var(--bdrm);
-  overflow-y:auto;z-index:90;padding:20px 0 40px;}
-.sidebar::-webkit-scrollbar{width:3px;}
-.sidebar::-webkit-scrollbar-track{background:transparent;}
-.sidebar::-webkit-scrollbar-thumb{background:var(--bdrm);border-radius:2px;}
-.sb-group{margin-bottom:4px;}
-.sb-group-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--t3);padding:12px 18px 6px;display:flex;align-items:center;
-  justify-content:space-between;cursor:pointer;user-select:none;transition:color .15s;padding-right:18px;}
-.sb-group-label:hover{color:var(--t2);}
-.sb-chevron{font-size:9px;color:var(--t3);transition:transform .22s cubic-bezier(.22,.61,.36,1),color .15s;flex-shrink:0;}
-.sb-group.collapsed .sb-chevron{transform:rotate(-90deg);}
-.sb-group-items{overflow:hidden;max-height:400px;transition:max-height .28s cubic-bezier(.22,.61,.36,1),opacity .22s ease;opacity:1;}
-.sb-group.collapsed .sb-group-items{max-height:0;opacity:0;}
-.sb-divider{height:1px;background:var(--bdrm);margin:4px 14px 8px;}
-.sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;font-size:12.5px;font-weight:500;
-  color:var(--t2);cursor:pointer;border-radius:8px;margin:2px 8px;transition:background .15s,color .15s;
-  border:1px solid transparent;user-select:none;}
-.sb-item:hover{background:rgba(58,184,245,.06);color:var(--t1);}
-.sb-item.active{background:rgba(58,184,245,.10);color:var(--t1);border-color:rgba(58,184,245,.2);}
-.sb-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--t3);
-  background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:3px;
-  padding:1px 5px;flex-shrink:0;transition:all .15s;}
-.sb-item.active .sb-num{color:var(--amber);background:var(--aa);border-color:rgba(246,202,69,.3);}
-.sb-icon{font-size:13px;flex-shrink:0;}
-
-/* MAIN */
-main{margin-top:var(--nav-h);margin-left:var(--sidebar-w);padding:40px 36px 80px;max-width:1400px;position:relative;z-index:1;}
-.section{display:none;}
-.section.active{display:block;animation:sin .25s cubic-bezier(.22,.61,.36,1) both;}
-@keyframes sin{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-.section.active .b-cell{animation:cell-in .35s cubic-bezier(.22,.61,.36,1) both;}
-.section.active .b-cell:nth-child(1){animation-delay:.04s;}
-.section.active .b-cell:nth-child(2){animation-delay:.09s;}
-.section.active .b-cell:nth-child(3){animation-delay:.14s;}
-.section.active .b-cell:nth-child(4){animation-delay:.19s;}
-.section.active .b-cell:nth-child(5){animation-delay:.24s;}
-.section.active .b-cell:nth-child(6){animation-delay:.29s;}
-.section.active .b-cell:nth-child(7){animation-delay:.34s;}
-.section.active .b-cell:nth-child(8){animation-delay:.39s;}
-@keyframes cell-in{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-
-/* PAGE HEADER */
-.ph{margin-bottom:36px;}
-.ph-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
-.ph-tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--amber);
-  background:linear-gradient(var(--c2),var(--c2)) padding-box,
-             linear-gradient(90deg,var(--amber),var(--coral)) border-box;
-  border:1px solid transparent;border-radius:4px;padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;}
-.ph-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(246,202,69,.2),transparent);}
-.ph-title{font-family:'Outfit',sans-serif;font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:8px;}
-.ph-desc{font-size:clamp(12.5px,1.1vw,14px);color:var(--t2);line-height:1.7;}
-.ph-rule{margin-top:24px;height:1px;background:linear-gradient(90deg,rgba(246,202,69,.2) 0%,transparent 70%);}
-
-/* CHIP ROW */
-.chip-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:28px;}
-.chip{display:flex;align-items:center;gap:6px;padding:5px 12px;background:var(--c2);border:1px solid var(--bdrm);border-radius:20px;font-size:11px;font-weight:600;color:var(--t2);transition:border-color .15s,transform .15s;cursor:default;}
-.chip:hover{border-color:var(--bdrh);transform:translateY(-1px);}
-.chip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-
-/* BENTO */
-.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-bottom:14px;}
-.b-cell{background:var(--c2);border:1px solid var(--bdrm);border-radius:var(--rxl);overflow:hidden;position:relative;transition:border-color .2s,box-shadow .2s;}
-.b-cell:hover{border-color:var(--bdrh);box-shadow:0 8px 32px rgba(58,184,245,.1);}
-.s3{grid-column:span 3;}.s4{grid-column:span 4;}.s5{grid-column:span 5;}.s6{grid-column:span 6;}.s7{grid-column:span 7;}.s8{grid-column:span 8;}.s12{grid-column:span 12;}
-
-/* CELL */
-.cell-head{padding:18px 22px 14px;border-bottom:1px solid var(--bdrm);position:relative;}
-.cell-head::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.ch-ocean .cell-head::before{background:linear-gradient(90deg,var(--ocean),transparent 70%);}
-.ch-biolum .cell-head::before{background:linear-gradient(90deg,var(--biolum),transparent 70%);}
-.ch-amber .cell-head::before{background:linear-gradient(90deg,var(--amber),transparent 70%);}
-.ch-coral .cell-head::before{background:linear-gradient(90deg,var(--coral),transparent 70%);}
-.ch-violet .cell-head::before{background:linear-gradient(90deg,var(--violet),transparent 70%);}
-.ch-jade .cell-head::before{background:linear-gradient(90deg,var(--jade),transparent 70%);}
-.cell-tag{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
-.ch-ocean .cell-tag{color:var(--ocean);}
-.ch-biolum .cell-tag{color:var(--biolum);}
-.ch-amber .cell-tag{color:var(--amber);}
-.ch-coral .cell-tag{color:var(--coral);}
-.ch-violet .cell-tag{color:var(--violet);}
-.ch-jade .cell-tag{color:var(--jade);}
-.cell-title{font-family:'Outfit',sans-serif;font-size:clamp(15px,1.4vw,18px);font-weight:700;margin-bottom:3px;}
-.cell-sub{font-size:12px;color:var(--t2);line-height:1.5;}
-.cell-body{padding:18px 22px;}
-
-/* TABLE */
-.gen{width:100%;border-collapse:collapse;}
-.gen thead tr{background:rgba(58,184,245,.04);border-bottom:1px solid var(--bdrm);}
-.gen th{text-align:left;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:var(--t2);letter-spacing:.1em;text-transform:uppercase;}
-.gen tbody tr{border-bottom:1px solid var(--bdr);transition:background .12s;}
-.gen tbody tr:last-child{border-bottom:none;}
-.gen tbody tr:hover{background:rgba(58,184,245,.03);}
-.gen td{padding:12px 14px;font-size:12.5px;color:var(--t2);vertical-align:top;line-height:1.65;}
-.gen td strong{color:var(--t1);}
-.gen td .badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:2px;}
-
-/* ZOOM LEVEL CARDS */
-.zoom-grid{display:flex;flex-direction:column;gap:0;}
-.zoom-card{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--bdr);transition:background .15s;cursor:default;}
-.zoom-card:last-child{border-bottom:none;}
-.zoom-card:hover{background:rgba(58,184,245,.03);}
-.zoom-lv{width:80px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:18px 10px;border-right:1px solid var(--bdr);gap:6px;}
-.zoom-lv-num{font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;letter-spacing:-.03em;line-height:1;}
-.zoom-lv-name{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;}
-.zl1 .zoom-lv-num{color:var(--coral);}  .zl1 .zoom-lv-name{color:var(--coral);}
-.zl2 .zoom-lv-num{color:var(--amber);} .zl2 .zoom-lv-name{color:var(--amber);}
-.zl3 .zoom-lv-num{color:var(--jade);}  .zl3 .zoom-lv-name{color:var(--jade);}
-.zl4 .zoom-lv-num{color:var(--ocean);} .zl4 .zoom-lv-name{color:var(--ocean);}
-.zoom-content{flex:1;padding:16px 18px;}
-.zoom-title{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px;}
-.zoom-desc{font-size:12.5px;color:var(--t2);line-height:1.65;}
-.zoom-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
-.z-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;
-  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;}
-.z-show{background:rgba(53,212,156,.12);border:1px solid rgba(53,212,156,.28);color:var(--jade);}
-.z-hide{background:rgba(248,114,114,.10);border:1px solid rgba(248,114,114,.25);color:var(--coral);}
-.z-shape{background:rgba(246,202,69,.10);border:1px solid rgba(246,202,69,.25);color:var(--amber);}
-.z-area{background:rgba(58,184,245,.10);border:1px solid rgba(58,184,245,.25);color:var(--ocean);}
-
-/* PRIORITY TABLE */
-.prio-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--bdr);transition:background .12s;}
-.prio-row:last-child{border-bottom:none;}
-.prio-row:hover{background:rgba(58,184,245,.03);}
-.prio-badge{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
-  font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;flex-shrink:0;}
-.p1{background:rgba(248,114,114,.15);border:1px solid rgba(248,114,114,.3);color:var(--coral);}
-.p2{background:rgba(246,202,69,.15);border:1px solid rgba(246,202,69,.3);color:var(--amber);}
-.p3{background:rgba(53,212,156,.13);border:1px solid rgba(53,212,156,.28);color:var(--jade);}
-.p4{background:rgba(58,184,245,.12);border:1px solid rgba(58,184,245,.25);color:var(--ocean);}
-.p5{background:rgba(124,143,255,.10);border:1px solid rgba(124,143,255,.22);color:var(--violet);}
-.prio-info{flex:1;}
-.prio-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px;}
-.prio-desc{font-size:11.5px;color:var(--t2);}
-.prio-lv{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--t3);flex-shrink:0;}
-
-/* FLOW CHART */
-.flow-chain{display:flex;flex-direction:column;gap:0;}
-.flow-item{display:flex;align-items:flex-start;gap:14px;padding:12px 0;position:relative;}
-.flow-item:not(:last-child)::after{content:'';position:absolute;left:15px;top:36px;bottom:-4px;width:2px;
-  background:linear-gradient(to bottom,rgba(58,184,245,.3),rgba(58,184,245,.08));}
-.flow-node{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;flex-shrink:0;position:relative;z-index:1;}
-.fn-ocean{background:rgba(58,184,245,.15);border:2px solid rgba(58,184,245,.4);color:var(--ocean);}
-.fn-amber{background:rgba(246,202,69,.15);border:2px solid rgba(246,202,69,.4);color:var(--amber);}
-.fn-jade{background:rgba(53,212,156,.15);border:2px solid rgba(53,212,156,.4);color:var(--jade);}
-.fn-coral{background:rgba(248,114,114,.15);border:2px solid rgba(248,114,114,.4);color:var(--coral);}
-.fn-violet{background:rgba(124,143,255,.15);border:2px solid rgba(124,143,255,.4);color:var(--violet);}
-.flow-content{flex:1;padding-top:4px;}
-.flow-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
-.flow-title{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px;}
-.flow-desc{font-size:12px;color:var(--t2);line-height:1.6;}
-
-/* ZONE MAP */
-.zone-wrap{display:grid;grid-template-rows:auto;gap:2px;}
-.zone-center{display:flex;justify-content:center;margin-bottom:2px;}
-.zone-core{background:rgba(246,202,69,.08);border:1px solid rgba(246,202,69,.3);border-radius:12px;
-  padding:18px 40px;text-align:center;position:relative;cursor:default;transition:border-color .2s;}
-.zone-core:hover{border-color:rgba(246,202,69,.55);}
-.zone-core-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(246,202,69,.6);margin-bottom:4px;}
-.zone-core-name{font-family:'Outfit',sans-serif;font-size:18px;font-weight:900;color:var(--amber);letter-spacing:-.02em;}
-.zone-core-desc{font-size:11.5px;color:var(--t2);margin-top:4px;}
-.zone-connector{display:flex;justify-content:center;}
-.zone-connector-line{width:2px;height:20px;background:linear-gradient(to bottom,rgba(246,202,69,.3),rgba(58,184,245,.3));}
-.zone-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;}
-.zone-card{border-radius:12px;padding:14px 14px;text-align:center;position:relative;overflow:hidden;
-  cursor:default;transition:border-color .2s,transform .15s,box-shadow .2s;}
-.zone-card:hover{transform:translateY(-2px);}
-.zone-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.zc-prod{background:rgba(53,212,156,.06);border:1px solid rgba(53,212,156,.22);}
-.zc-prod::before{background:linear-gradient(90deg,var(--jade),transparent);}
-.zc-prod:hover{border-color:rgba(53,212,156,.45);box-shadow:0 6px 20px rgba(53,212,156,.1);}
-.zc-mil{background:rgba(248,114,114,.06);border:1px solid rgba(248,114,114,.22);}
-.zc-mil::before{background:linear-gradient(90deg,var(--coral),transparent);}
-.zc-mil:hover{border-color:rgba(248,114,114,.45);box-shadow:0 6px 20px rgba(248,114,114,.1);}
-.zc-dip{background:rgba(124,143,255,.06);border:1px solid rgba(124,143,255,.22);}
-.zc-dip::before{background:linear-gradient(90deg,var(--violet),transparent);}
-.zc-dip:hover{border-color:rgba(124,143,255,.45);box-shadow:0 6px 20px rgba(124,143,255,.1);}
-.zc-sup{background:rgba(58,184,245,.06);border:1px solid rgba(58,184,245,.22);}
-.zc-sup::before{background:linear-gradient(90deg,var(--ocean),transparent);}
-.zc-sup:hover{border-color:rgba(58,184,245,.45);box-shadow:0 6px 20px rgba(58,184,245,.1);}
-.zone-card-icon{font-size:22px;margin-bottom:8px;}
-.zone-card-name{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
-.zone-card-desc{font-size:11px;color:var(--t2);line-height:1.55;}
-.zc-prod .zone-card-name{color:var(--jade);}
-.zc-mil .zone-card-name{color:var(--coral);}
-.zc-dip .zone-card-name{color:var(--violet);}
-.zc-sup .zone-card-name{color:var(--ocean);}
-
-/* FACILITY LIST */
-.fac-list{display:flex;flex-direction:column;gap:0;}
-.fac-item{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-bottom:1px solid var(--bdr);transition:background .12s;}
-.fac-item:last-child{border-bottom:none;}
-.fac-item:hover{background:rgba(58,184,245,.03);}
-.fac-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.fi-jade{background:rgba(53,212,156,.12);border:1px solid rgba(53,212,156,.22);}
-.fi-coral{background:rgba(248,114,114,.12);border:1px solid rgba(248,114,114,.22);}
-.fi-violet{background:rgba(124,143,255,.12);border:1px solid rgba(124,143,255,.22);}
-.fi-ocean{background:rgba(58,184,245,.12);border:1px solid rgba(58,184,245,.22);}
-.fac-info{flex:1;}
-.fac-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px;}
-.fac-role{font-size:11.5px;color:var(--t2);line-height:1.55;}
-
-/* CALLOUT */
-.callout{background:rgba(4,16,31,.6);border:1px solid var(--bdrm);border-radius:10px;padding:14px 17px;}
-.callout-tag{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
-.ct-amber .callout-tag{color:var(--amber);}
-.ct-ocean .callout-tag{color:var(--ocean);}
-.ct-jade .callout-tag{color:var(--jade);}
-.ct-coral .callout-tag{color:var(--coral);}
-.callout-body{font-size:13px;color:var(--t1);line-height:1.65;}
-.callout-body strong{color:var(--biolum);}
-
-/* TODO / PENDING */
-.pending-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-.pending-card{background:var(--c2);border:1px solid rgba(246,202,69,.18);border-radius:var(--rl);padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s;}
-.pending-card:hover{border-color:rgba(246,202,69,.35);transform:translateY(-2px);}
-.pending-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);opacity:.4;}
-.pc-tag{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:rgba(246,202,69,.6);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
-.pc-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px;}
-.pc-desc{font-size:11px;color:var(--t2);line-height:1.55;}
-
-/* SCALE COMPARE */
-.scale-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.sc-card{border-radius:14px;padding:20px;position:relative;overflow:hidden;}
-.sc-world{background:rgba(58,184,245,.05);border:1px solid rgba(58,184,245,.22);}
-.sc-base{background:rgba(248,114,114,.05);border:1px solid rgba(248,114,114,.22);}
-.sc-icon{font-size:32px;margin-bottom:10px;}
-.sc-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
-.sc-world .sc-label{color:var(--ocean);}
-.sc-base .sc-label{color:var(--coral);}
-.sc-title{font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;margin-bottom:6px;}
-.sc-world .sc-title{color:var(--ocean);}
-.sc-base .sc-title{color:var(--coral);}
-.sc-desc{font-size:12.5px;color:var(--t2);line-height:1.65;}
-.sc-bullet{margin-top:10px;display:flex;flex-direction:column;gap:5px;}
-.sc-b{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--t2);}
-.sc-b::before{content:'—';flex-shrink:0;opacity:.4;}
-
-/* SCREEN FLOW */
-.screen-flow{display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:4px;}
-.sf-step{flex-shrink:0;background:var(--c3);border:1px solid var(--bdrm);border-radius:10px;
-  padding:12px 16px;text-align:center;min-width:100px;transition:border-color .2s;}
-.sf-step:hover{border-color:var(--bdrh);}
-.sf-icon{font-size:20px;margin-bottom:6px;}
-.sf-name{font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;}
-.sf-sub{font-size:10px;color:var(--t3);}
-.sf-arrow{flex-shrink:0;padding:0 8px;color:var(--ocean);font-size:16px;opacity:.5;}
-
-/* STAT BARS */
-.stat-row{display:flex;flex-direction:column;gap:10px;}
-.stat-item{display:flex;flex-direction:column;gap:4px;}
-.stat-head{display:flex;justify-content:space-between;align-items:center;}
-.stat-label{font-size:12px;font-weight:600;color:var(--t2);}
-.stat-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--t1);}
-.stat-bar{height:6px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;}
-.stat-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.22,.61,.36,1);}
-
-/* ========== SIMULATOR ========== */
-.sim-sub-tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--bdrm);padding-bottom:14px;flex-wrap:wrap;}
-.sim-sub-tab{padding:8px 18px;background:var(--c2);border:1px solid var(--bdrm);border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .15s;}
-.sim-sub-tab:hover{color:var(--t1);border-color:var(--bdrh);}
-.sim-sub-tab.active{color:var(--t1);background:rgba(58,184,245,.1);border-color:rgba(58,184,245,.35);}
-.sim-panel{display:none;}
-.sim-panel.active{display:block;animation:sin .2s ease both;}
-.sim-layout{display:grid;grid-template-columns:auto 260px;gap:16px;align-items:start;}
-.sim-canvas-box{background:var(--c2);border:1px solid var(--bdrm);border-radius:14px;overflow:hidden;}
-.sim-canvas-box canvas{display:block;max-width:100%;height:auto;}
-.sim-canvas-footer{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--bdrm);}
-.sim-side-panel{display:flex;flex-direction:column;gap:12px;}
-.sim-ctrl-block{background:var(--c2);border:1px solid var(--bdrm);border-radius:12px;padding:14px;}
-.sim-ctrl-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
-.sim-info-block{background:var(--c2);border:1px solid var(--bdrm);border-radius:12px;padding:14px;}
-.sim-hover-block{background:var(--c2);border:1px solid var(--bdrm);border-radius:12px;padding:14px;min-height:80px;}
-.wm-zoom-btns{display:flex;flex-direction:column;gap:6px;}
-.wm-zbtn{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--c3);border:1px solid var(--bdrm);border-radius:8px;cursor:pointer;transition:all .15s;width:100%;text-align:left;}
-.wm-zbtn:hover{border-color:var(--bdrh);background:rgba(58,184,245,.06);}
-.wm-zbtn.active{border-color:rgba(58,184,245,.4);background:rgba(58,184,245,.1);}
-.zbtn-lv{font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;flex-shrink:0;width:28px;}
-.zbtn-name{font-size:12px;font-weight:600;color:var(--t2);}
-.wm-zbtn.active .zbtn-name{color:var(--t1);}
-.hb-legend{display:flex;flex-direction:column;gap:7px;}
-.hb-leg-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t2);}
-.hb-leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
-.sim-act-btn{padding:5px 12px;background:rgba(248,114,114,.1);border:1px solid rgba(248,114,114,.3);border-radius:6px;color:var(--coral);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Noto Sans KR',sans-serif;}
-.sim-act-btn:hover{background:rgba(248,114,114,.2);}
-.sim-act-btn-sec{background:rgba(58,184,245,.06);border-color:rgba(58,184,245,.25);color:var(--ocean);}
-.sim-act-btn-sec:hover{background:rgba(58,184,245,.15);}
-
-footer{text-align:center;padding:24px;color:var(--t3);font-size:11px;font-family:'JetBrains Mono',monospace;border-top:1px solid var(--bdrm);position:relative;z-index:1;margin-left:var(--sidebar-w);}
-
-/* SIM HTML TOOLTIP */
-.sim-tip{position:fixed;z-index:300;pointer-events:none;background:rgba(3,12,24,.97);border:1px solid rgba(58,184,245,.3);border-radius:8px;padding:9px 12px;min-width:148px;max-width:220px;font-size:11px;line-height:1.75;box-shadow:0 6px 24px rgba(0,0,0,.55);animation:tipin .1s cubic-bezier(.22,.61,.36,1) both;}
-@keyframes tipin{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
-.sim-tip .tk{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#f6ca45;}
-.sim-tip .tv{color:rgba(210,230,255,.82);}
-.sim-tip .tn{font-size:12px;font-weight:700;}
-.sim-tip .td{border-top:1px solid rgba(58,184,245,.14);margin:5px 0 4px;}
-
-/* WM POPUP */
-.wm-popup{position:fixed;z-index:200;background:rgba(3,12,26,.97);border:1px solid rgba(58,184,245,.45);border-radius:12px;padding:0;min-width:220px;max-width:260px;pointer-events:all;box-shadow:0 8px 32px rgba(0,0,0,.6);animation:wmpop .14s cubic-bezier(.22,.61,.36,1) both;}
-@keyframes wmpop{from{opacity:0;transform:scale(.90) translateY(-6px);}to{opacity:1;transform:none;}}
-.wm-popup-head{display:flex;align-items:center;gap:10px;padding:12px 14px 10px;border-bottom:1px solid rgba(58,184,245,.12);}
-.wm-popup-icon{font-size:22px;flex-shrink:0;}
-.wm-popup-name{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:var(--t1);line-height:1.2;}
-.wm-popup-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);margin-top:2px;}
-.wm-popup-close{position:absolute;top:8px;right:10px;background:none;border:none;cursor:pointer;font-size:16px;color:var(--t3);line-height:1;padding:2px 4px;transition:color .12s;}
-.wm-popup-close:hover{color:var(--t1);}
-.wm-popup-stats{padding:10px 14px;border-bottom:1px solid rgba(58,184,245,.08);}
-.wm-popup-stat{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px;}
-.wm-popup-stat-key{color:var(--t3);}
-.wm-popup-stat-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t1);font-weight:500;}
-.wm-popup-actions{display:flex;gap:6px;padding:10px 14px;flex-wrap:wrap;}
-.wm-popup-btn{flex:1;min-width:60px;padding:5px 8px;border-radius:6px;border:1px solid;font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;transition:all .12s;opacity:.55;}
-.wm-popup-btn:hover{opacity:.85;}
-.wm-popup-btn.primary{border-color:var(--ocean);color:var(--ocean);background:rgba(58,184,245,.08);}
-.wm-popup-btn.danger{border-color:var(--coral);color:var(--coral);background:rgba(248,114,114,.08);}
-.wm-popup-btn.neutral{border-color:var(--t3);color:var(--t2);background:rgba(255,255,255,.03);}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #003355; overflow: hidden; touch-action: none; }
+  canvas { display: block; }
+  #powerLabel {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 32px);
+    left: 50%; transform: translateX(-50%);
+    background: rgba(21,101,192,0.88); padding: 10px 36px; border-radius: 28px;
+    font-size: 28px; font-family: 'Arial Black', Arial, sans-serif; color: #fff;
+    pointer-events: none; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 10;
+  }
+  #msg {
+    position: fixed; top: 38%; left: 50%; transform: translate(-50%,-50%);
+    font-size: 52px; color: #FFD54F; text-shadow: 0 3px 8px rgba(0,0,0,0.7);
+    pointer-events: none; opacity: 0; transition: opacity 0.3s;
+    font-family: 'Arial Black', Arial, sans-serif; z-index: 10; white-space: nowrap;
+  }
+  #score {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 18px);
+    right: 20px;
+    font-size: 24px; color: #FFD54F; font-family: 'Arial Black', Arial, sans-serif;
+    pointer-events: none; z-index: 10; text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+  #landscape-warn {
+    display: none; position: fixed; inset: 0; background: #0a1628;
+    color: #fff; font-family: Arial, sans-serif;
+    flex-direction: column; align-items: center; justify-content: center;
+    font-size: 20px; z-index: 100; gap: 16px; text-align: center; padding: 24px;
+  }
+  #landscape-warn .icon { font-size: 48px; }
+  @media (orientation: landscape) and (max-height: 500px) {
+    #landscape-warn { display: flex; }
+  }
 </style>
 </head>
 <body>
-
-<!-- NAV -->
-<nav class="nav">
-  <div class="nav-brand">
-    <div class="nav-brand-icon">🗺</div>
-    <div class="nav-brand-text">
-      <div class="nav-brand-name">AS World</div>
-      <div class="nav-brand-sub">Map Design v0.1</div>
-    </div>
-  </div>
-  <div class="nav-divider"></div>
-  <div class="nav-page-title">게임 화면 기획서 — 월드맵 & 본거지</div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showSection('worldmap',this)">🌍 월드맵</button>
-    <button class="nav-tab" onclick="showSection('homebase',this)">🏯 본거지</button>
-    <button class="nav-tab" onclick="showSection('common',this)">🔗 공통 흐름</button>
-    <button class="nav-tab" onclick="showSection('pending',this)">📋 미결 항목</button>
-    <button class="nav-tab" onclick="showSection('simulator',this);initSimulator()">🎮 시뮬레이터</button>
-  </div>
-  <div class="nav-end">
-    <div class="nav-chip">기획 초안</div>
-    <div class="nav-status">
-      <div class="nav-status-dot"></div>
-      검토 대기
-    </div>
-  </div>
-</nav>
-
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sb-group">
-    <div class="sb-group-label" onclick="toggleGroup(this)">
-      월드맵 <span class="sb-chevron">▾</span>
-    </div>
-    <div class="sb-group-items">
-      <div class="sb-item active" onclick="showSection('worldmap',null);setSbActive(this)"><span class="sb-icon">🌍</span> 개요 & 줌 레벨</div>
-      <div class="sb-item" onclick="showSection('worldmap',null);setSbActive(this)"><span class="sb-icon">📊</span> 오브젝트 우선순위</div>
-      <div class="sb-item" onclick="showSection('worldmap',null);setSbActive(this)"><span class="sb-icon">📐</span> 타일 규격</div>
-    </div>
-  </div>
-  <div class="sb-divider"></div>
-  <div class="sb-group">
-    <div class="sb-group-label" onclick="toggleGroup(this)">
-      본거지 <span class="sb-chevron">▾</span>
-    </div>
-    <div class="sb-group-items">
-      <div class="sb-item" onclick="showSection('homebase',null);setSbActive(this)"><span class="sb-icon">🏯</span> 역할 지구 구조</div>
-      <div class="sb-item" onclick="showSection('homebase',null);setSbActive(this)"><span class="sb-icon">🏭</span> 생산 지구</div>
-      <div class="sb-item" onclick="showSection('homebase',null);setSbActive(this)"><span class="sb-icon">⚔️</span> 병사육성 지구</div>
-      <div class="sb-item" onclick="showSection('homebase',null);setSbActive(this)"><span class="sb-icon">🤝</span> 외교 지구</div>
-      <div class="sb-item" onclick="showSection('homebase',null);setSbActive(this)"><span class="sb-icon">🔧</span> 기타 시설</div>
-    </div>
-  </div>
-  <div class="sb-divider"></div>
-  <div class="sb-group">
-    <div class="sb-group-label" onclick="toggleGroup(this)">
-      기타 <span class="sb-chevron">▾</span>
-    </div>
-    <div class="sb-group-items">
-      <div class="sb-item" onclick="showSection('common',null);setSbActive(this)"><span class="sb-icon">🔗</span> 화면 전환 흐름</div>
-      <div class="sb-item" onclick="showSection('pending',null);setSbActive(this)"><span class="sb-icon">📋</span> 미결 항목</div>
-    </div>
-  </div>
-</aside>
-
-<main>
-
-<!-- ===== SECTION: WORLDMAP ===== -->
-<section class="section active" id="s-worldmap">
-
-  <div class="ph">
-    <div class="ph-eyebrow">
-      <div class="ph-tag">SCREEN-01</div>
-      <div class="ph-line"></div>
-    </div>
-    <div class="ph-title">월드맵 <span style="color:var(--t3);font-weight:400;font-size:0.65em;">World Map</span></div>
-    <div class="ph-desc">유저가 세계를 탐색·이동·전략을 구사하는 전장 공간. 줌 레벨에 따라 표시 정보와 오브젝트 렌더링 방식이 단계적으로 변화한다.</div>
-    <div class="ph-rule"></div>
-  </div>
-
-  <div class="chip-row">
-    <div class="chip"><span class="chip-dot" style="background:var(--ocean)"></span>타일 기반 오픈월드</div>
-    <div class="chip"><span class="chip-dot" style="background:var(--amber)"></span>줌 레벨 4단계</div>
-    <div class="chip"><span class="chip-dot" style="background:var(--coral)"></span>대규모 부대 전투 스케일</div>
-    <div class="chip"><span class="chip-dot" style="background:var(--jade)"></span>서버별 대륙 표현</div>
-  </div>
-
-  <!-- 줌 레벨 + 타일 규격 -->
-  <div class="bento">
-    <div class="b-cell s8 ch-ocean">
-      <div class="cell-head">
-        <div class="cell-tag">Zoom Levels</div>
-        <div class="cell-title">줌 레벨 6단계</div>
-        <div class="cell-sub">퍼센트(%) 기반 축소·확대 — 레벨마다 오브젝트 처리 방식이 단계적으로 달라진다</div>
-      </div>
-      <div class="cell-body" style="padding:0;">
-        <div class="zoom-grid">
-
-          <div class="zoom-card zl1">
-            <div class="zoom-lv">
-              <div class="zoom-lv-num">200%</div>
-              <div class="zoom-lv-name">근접 뷰</div>
-            </div>
-            <div class="zoom-content">
-              <div class="zoom-title">본거지 / 외부 오브젝트 선명</div>
-              <div class="zoom-desc">건물·유닛·지형 디테일 풀 렌더. 본거지 진입 가능 줌 레벨. 소규모 전투 연출이 이 레벨에서 진행.</div>
-              <div class="zoom-tags">
-                <span class="z-tag z-show">건물 상세 외형</span>
-                <span class="z-tag z-show">유닛 개별 렌더</span>
-                <span class="z-tag z-show">본거지 진입 가능</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="zoom-card zl2">
-            <div class="zoom-lv">
-              <div class="zoom-lv-num">100%</div>
-              <div class="zoom-lv-name">전략 뷰</div>
-            </div>
-            <div class="zoom-content">
-              <div class="zoom-title">주변 시설 인지 가능 수준</div>
-              <div class="zoom-desc">오브젝트가 작아지지만 식별 가능. 본거지·거점은 아이콘+이름 표시. 유닛은 부대 단위 통합 아이콘.</div>
-              <div class="zoom-tags">
-                <span class="z-tag z-shape">아이콘 통합 시작</span>
-                <span class="z-tag z-show">시설 인지 가능</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="zoom-card zl3">
-            <div class="zoom-lv">
-              <div class="zoom-lv-num">50%</div>
-              <div class="zoom-lv-name">광역 뷰</div>
-            </div>
-            <div class="zoom-content">
-              <div class="zoom-title">오브젝트 아이콘화 — P4·P5 비노출</div>
-              <div class="zoom-desc">P4·P5 오브젝트 비노출. 세력 영역 오버레이 등장. P1~P3 핀 마커로 표시. 지형 단순화.</div>
-              <div class="zoom-tags">
-                <span class="z-tag z-hide">P4·P5 비노출</span>
-                <span class="z-tag z-area">세력 영역 오버레이</span>
-                <span class="z-tag z-shape">오브젝트 아이콘</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="zoom-card" style="border-bottom:1px solid var(--bdr);">
-            <div class="zoom-lv" style="border-right:1px solid var(--bdr);">
-              <div class="zoom-lv-num" style="color:var(--jade);font-size:16px;">~25%</div>
-              <div class="zoom-lv-name" style="color:var(--jade);">지역 뷰</div>
-            </div>
-            <div class="zoom-content">
-              <div class="zoom-title">월드 1/4 전체 조망</div>
-              <div class="zoom-desc">월드 맵의 1/4 영역이 한 화면에 표시. P1 거점 핀만 잔존. 세력 색상 면이 두드러짐. 화면 드래그로 인접 구역으로 이동.</div>
-              <div class="zoom-tags">
-                <span class="z-tag z-hide">P2~P5 비노출</span>
-                <span class="z-tag z-area">세력 색상 면</span>
-                <span class="z-tag" style="background:rgba(53,212,156,.1);border:1px solid rgba(53,212,156,.25);color:var(--jade);">구역 이동 가능</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="zoom-card" style="border-bottom:1px solid var(--bdr);">
-            <div class="zoom-lv" style="border-right:1px solid var(--bdr);">
-              <div class="zoom-lv-num" style="color:var(--biolum);font-size:16px;">~10%</div>
-              <div class="zoom-lv-name" style="color:var(--biolum);">서버 뷰</div>
-            </div>
-            <div class="zoom-content">
-              <div class="zoom-title">월드 전체 표시 + 서버 간 이동</div>
-              <div class="zoom-desc">하나의 서버(월드) 전체가 한 화면에 보임. 화면 이동 시 인접 서버(월드) 화면으로 전환 가능. 서버 대륙 윤곽 표시.</div>
-              <div class="zoom-tags">
-                <span class="z-tag z-hide">유닛 전면 비노출</span>
-                <span class="z-tag z-area">서버 대륙 윤곽</span>
-                <span class="z-tag" style="background:rgba(0,232,200,.1);border:1px solid rgba(0,232,200,.25);color:var(--biolum);">서버 간 이동</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="zoom-card zl4" style="border-bottom:none;">
-            <div class="zoom-lv">
-              <div class="zoom-lv-num" style="font-size:14px;">전지적</div>
-              <div class="zoom-lv-name">멀티서버 뷰</div>
-            </div>
-            <div class="zoom-content">
-              <div class="zoom-title">다른 서버(월드)가 나열된 최대 시점</div>
-              <div class="zoom-desc">여러 서버가 나란히 배열된 메타 뷰. 각 서버의 세력 분포와 주요 이벤트 상태가 요약 표시. 서버 선택·이동 UI 진입점.</div>
-              <div class="zoom-tags">
-                <span class="z-tag z-area">서버 목록 나열</span>
-                <span class="z-tag z-show">서버별 세력 요약</span>
-                <span class="z-tag" style="background:rgba(124,143,255,.1);border:1px solid rgba(124,143,255,.25);color:var(--violet);">서버 이동 UI</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="b-cell s4 ch-amber">
-      <div class="cell-head">
-        <div class="cell-tag">Tile Scale</div>
-        <div class="cell-title">타일 규격</div>
-        <div class="cell-sub">월드맵 vs 본거지 스케일 비교</div>
-      </div>
-      <div class="cell-body">
-        <div class="scale-compare" style="grid-template-columns:1fr;">
-          <div class="sc-card sc-world">
-            <div class="sc-label">World Map Tile</div>
-            <div class="sc-title">🌍 월드 타일</div>
-            <div class="sc-desc">대규모 부대 전투 수용 단위. 여러 부대가 동시 주둔·교전 가능한 규격.</div>
-            <div class="sc-bullet">
-              <div class="sc-b">다수 부대 동시 주둔 가능</div>
-              <div class="sc-b">이동: 타일 단위, 유닛·지형별 속도 차등</div>
-              <div class="sc-b">최대 주둔 수 → 밸런스 문서 별도 정의</div>
-            </div>
-          </div>
-          <div class="sc-card sc-base" style="margin-top:10px;">
-            <div class="sc-label">Home Base Tile</div>
-            <div class="sc-title">🏯 본거지 타일</div>
-            <div class="sc-desc">소규모 전투(방어전·침공전) 수용 가능한 규격. 건물 배치 및 방어 연출 공간.</div>
-            <div class="sc-bullet">
-              <div class="sc-b">방어전 발생 시 타일 위 전투 연출</div>
-              <div class="sc-b">건물은 타일 위에 배치</div>
-              <div class="sc-b">빈 타일 = 추가 건설 슬롯</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 오브젝트 우선순위 -->
-  <div class="bento">
-    <div class="b-cell s7 ch-coral">
-      <div class="cell-head">
-        <div class="cell-tag">Object Priority</div>
-        <div class="cell-title">오브젝트 우선순위</div>
-        <div class="cell-sub">줌 아웃 시 어느 레벨까지 표시를 유지하는지 결정하는 기준</div>
-      </div>
-      <div class="cell-body" style="padding:0;">
-        <div class="fac-list">
-          <div class="prio-row">
-            <div class="prio-badge p1">P1</div>
-            <div class="prio-info">
-              <div class="prio-name">주요 거점 — 성, 수도, 요새</div>
-              <div class="prio-desc">세계의 핵심 전략 지점. 점령 목표.</div>
-            </div>
-            <div class="prio-lv">Lv4까지 유지</div>
-          </div>
-          <div class="prio-row">
-            <div class="prio-badge p1">P1</div>
-            <div class="prio-info">
-              <div class="prio-name">연합 본부</div>
-              <div class="prio-desc">세력·외교의 중심. 대륙 뷰에서도 식별 필요.</div>
-            </div>
-            <div class="prio-lv">Lv4까지 유지</div>
-          </div>
-          <div class="prio-row">
-            <div class="prio-badge p2">P2</div>
-            <div class="prio-info">
-              <div class="prio-name">자원 노드 — 광산, 농장, 유전 등</div>
-              <div class="prio-desc">전략 자원 확보 지점. 광역 뷰까지 가시.</div>
-            </div>
-            <div class="prio-lv">Lv3까지 유지</div>
-          </div>
-          <div class="prio-row">
-            <div class="prio-badge p2">P2</div>
-            <div class="prio-info">
-              <div class="prio-name">유저 본거지</div>
-              <div class="prio-desc">개인 영역 식별. 광역 뷰까지 마커 표시.</div>
-            </div>
-            <div class="prio-lv">Lv3까지 유지</div>
-          </div>
-          <div class="prio-row">
-            <div class="prio-badge p3">P3</div>
-            <div class="prio-info">
-              <div class="prio-name">대규모 부대 (일정 수 이상)</div>
-              <div class="prio-desc">임계치 초과 부대는 광역 뷰에서 통합 아이콘 표시.</div>
-            </div>
-            <div class="prio-lv">Lv3까지 유지</div>
-          </div>
-          <div class="prio-row">
-            <div class="prio-badge p4">P4</div>
-            <div class="prio-info">
-              <div class="prio-name">소규모 부대 / 탐색 유닛</div>
-              <div class="prio-desc">전략 뷰 이하에서만 표시.</div>
-            </div>
-            <div class="prio-lv">Lv2 이하만</div>
-          </div>
-          <div class="prio-row">
-            <div class="prio-badge p5">P5</div>
-            <div class="prio-info">
-              <div class="prio-name">야생 몬스터 / 장식 오브젝트</div>
-              <div class="prio-desc">전술 뷰(근거리)에서만 표시.</div>
-            </div>
-            <div class="prio-lv">Lv1 전술만</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="b-cell s5 ch-violet">
-      <div class="cell-head">
-        <div class="cell-tag">Lv4 — Continental View</div>
-        <div class="cell-title">대륙 뷰 구조</div>
-        <div class="cell-sub">최대 축소 시 서버 단위 세계관 전달</div>
-      </div>
-      <div class="cell-body">
-        <div class="flow-chain">
-          <div class="flow-item">
-            <div class="flow-node fn-ocean">A</div>
-            <div class="flow-content">
-              <div class="flow-label" style="color:var(--ocean);">Server A</div>
-              <div class="flow-title">대륙 A</div>
-              <div class="flow-desc">세력 색상 면 + 주요 거점 핀 마커</div>
-            </div>
-          </div>
-          <div class="flow-item">
-            <div class="flow-node fn-amber">B</div>
-            <div class="flow-content">
-              <div class="flow-label" style="color:var(--amber);">Server B</div>
-              <div class="flow-title">대륙 B</div>
-              <div class="flow-desc">세력 색상 면 + 주요 거점 핀 마커</div>
-            </div>
-          </div>
-          <div class="flow-item">
-            <div class="flow-node fn-coral">C</div>
-            <div class="flow-content">
-              <div class="flow-label" style="color:var(--coral);">Server C</div>
-              <div class="flow-title">대륙 C</div>
-              <div class="flow-desc">세력 색상 면 + 주요 거점 핀 마커</div>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:16px;">
-          <div class="callout ct-amber">
-            <div class="callout-tag">미정</div>
-            <div class="callout-body" style="font-size:12px;">서버 간 연결 여부 및 이동 가능성은 <strong>서버 정책 별도 문서</strong>에서 정의 예정.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ===== SECTION: HOMEBASE ===== -->
-<section class="section" id="s-homebase">
-
-  <div class="ph">
-    <div class="ph-eyebrow">
-      <div class="ph-tag">SCREEN-02</div>
-      <div class="ph-line"></div>
-    </div>
-    <div class="ph-title">본거지 <span style="color:var(--t3);font-weight:400;font-size:0.65em;">Home Base</span></div>
-    <div class="ph-desc">유저의 핵심 터전. 성장·생산·외교의 중심 공간으로, 본진을 중심으로 역할 지구가 방사형으로 구성된다. 소규모 전투(방어전·침공전)가 발생 가능한 타일 규격.</div>
-    <div class="ph-rule"></div>
-  </div>
-
-  <div class="chip-row">
-    <div class="chip"><span class="chip-dot" style="background:var(--amber)"></span>본진 중심 역할 지구 분리</div>
-    <div class="chip"><span class="chip-dot" style="background:var(--jade)"></span>생산 · 병사육성 · 외교 · 기타</div>
-    <div class="chip"><span class="chip-dot" style="background:var(--coral)"></span>소규모 전투 수용 타일</div>
-    <div class="chip"><span class="chip-dot" style="background:var(--violet)"></span>본진 레벨이 전체 상한 결정</div>
-  </div>
-
-  <!-- 지구 맵 -->
-  <div class="bento">
-    <div class="b-cell s12 ch-amber">
-      <div class="cell-head">
-        <div class="cell-tag">Zone Layout</div>
-        <div class="cell-title">역할 지구 구성</div>
-        <div class="cell-sub">본진을 중심으로 4개 지구가 구분. 본진 레벨이 모든 건물의 레벨 상한을 결정.</div>
-      </div>
-      <div class="cell-body">
-        <div class="zone-wrap">
-          <div class="zone-center">
-            <div class="zone-core">
-              <div class="zone-core-label">Core Building</div>
-              <div class="zone-core-name">🏯 본진</div>
-              <div class="zone-core-desc">전체 건물 레벨 상한 결정 · 본거지 방어력 기본값 · 침공 전투의 핵심 목표</div>
-            </div>
-          </div>
-          <div class="zone-connector"><div class="zone-connector-line"></div></div>
-          <div class="zone-row">
-            <div class="zone-card zc-prod">
-              <div class="zone-card-icon">🏭</div>
-              <div class="zone-card-name">생산 지구</div>
-              <div class="zone-card-desc">자원 생산·저장·제작·연구</div>
-            </div>
-            <div class="zone-card zc-mil">
-              <div class="zone-card-icon">⚔️</div>
-              <div class="zone-card-name">병사육성 지구</div>
-              <div class="zone-card-desc">유닛 훈련·강화·보급</div>
-            </div>
-            <div class="zone-card zc-dip">
-              <div class="zone-card-icon">🤝</div>
-              <div class="zone-card-name">외교 지구</div>
-              <div class="zone-card-desc">연합·교역·사절단</div>
-            </div>
-            <div class="zone-card zc-sup">
-              <div class="zone-card-icon">🔧</div>
-              <div class="zone-card-name">기타 시설 지구</div>
-              <div class="zone-card-desc">방어·치료·감시·영웅</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 시설 상세 4개 -->
-  <div class="bento">
-    <div class="b-cell s6 ch-jade">
-      <div class="cell-head">
-        <div class="cell-tag">Production Zone</div>
-        <div class="cell-title">🏭 생산 지구</div>
-        <div class="cell-sub">자원 생산, 저장, 제작, 기술 업그레이드</div>
-      </div>
-      <div class="cell-body" style="padding:0;">
-        <div class="fac-list">
-          <div class="fac-item">
-            <div class="fac-icon fi-jade">🌾</div>
-            <div class="fac-info">
-              <div class="fac-name">농장 / 식량 창고</div>
-              <div class="fac-role">식량 생산 및 저장. 유닛 유지비·훈련비의 기초 자원.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-jade">⛏️</div>
-            <div class="fac-info">
-              <div class="fac-name">광산 / 자원 창고</div>
-              <div class="fac-role">광물·목재 등 자원 생산 및 저장.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-jade">🔨</div>
-            <div class="fac-info">
-              <div class="fac-name">공방 (제련소)</div>
-              <div class="fac-role">장비·소모품 제작. 강화 재료 가공.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-jade">🔬</div>
-            <div class="fac-info">
-              <div class="fac-name">연구소</div>
-              <div class="fac-role">기술 업그레이드. 유닛·건물 성능 향상 트리.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="b-cell s6 ch-coral">
-      <div class="cell-head">
-        <div class="cell-tag">Military Zone</div>
-        <div class="cell-title">⚔️ 병사육성 지구</div>
-        <div class="cell-sub">유닛 훈련, 경험치 강화, 보급 관리</div>
-      </div>
-      <div class="cell-body" style="padding:0;">
-        <div class="fac-list">
-          <div class="fac-item">
-            <div class="fac-icon fi-coral">🛡️</div>
-            <div class="fac-info">
-              <div class="fac-name">막사</div>
-              <div class="fac-role">보병 유닛 훈련.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-coral">🐎</div>
-            <div class="fac-info">
-              <div class="fac-name">마구간</div>
-              <div class="fac-role">기병 유닛 훈련.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-coral">⚓</div>
-            <div class="fac-info">
-              <div class="fac-name">조선소 / 비행장</div>
-              <div class="fac-role">해상·공중 유닛 훈련. (해당 시 적용)</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-coral">🏋️</div>
-            <div class="fac-info">
-              <div class="fac-name">훈련장</div>
-              <div class="fac-role">유닛 경험치·숙련도 강화.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-coral">🗃️</div>
-            <div class="fac-info">
-              <div class="fac-name">병기고</div>
-              <div class="fac-role">유닛 장비 관리 및 보급.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="b-cell s6 ch-violet">
-      <div class="cell-head">
-        <div class="cell-tag">Diplomatic Zone</div>
-        <div class="cell-title">🤝 외교 지구</div>
-        <div class="cell-sub">연합·교역·외교 협상의 허브</div>
-      </div>
-      <div class="cell-body" style="padding:0;">
-        <div class="fac-list">
-          <div class="fac-item">
-            <div class="fac-icon fi-violet">🏛️</div>
-            <div class="fac-info">
-              <div class="fac-name">연합 본부</div>
-              <div class="fac-role">연합 가입·창설. 연합 미션 관리.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-violet">📜</div>
-            <div class="fac-info">
-              <div class="fac-name">사절단</div>
-              <div class="fac-role">타 유저·세력과 외교 협상 및 조약 체결.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-violet">🏪</div>
-            <div class="fac-info">
-              <div class="fac-name">시장 / 교역소</div>
-              <div class="fac-role">자원 거래. 연합원 간 물자 지원.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="b-cell s6 ch-ocean">
-      <div class="cell-head">
-        <div class="cell-tag">Support Zone</div>
-        <div class="cell-title">🔧 기타 시설 지구</div>
-        <div class="cell-sub">방어·치료·감시·영웅 관리</div>
-      </div>
-      <div class="cell-body" style="padding:0;">
-        <div class="fac-list">
-          <div class="fac-item">
-            <div class="fac-icon fi-ocean">⚕️</div>
-            <div class="fac-info">
-              <div class="fac-name">의무대</div>
-              <div class="fac-role">전투 후 부상 유닛 회복.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-ocean">🗼</div>
-            <div class="fac-info">
-              <div class="fac-name">감시탑</div>
-              <div class="fac-role">주변 탐색 범위 확장. 적 침공 조기 감지.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-ocean">🏰</div>
-            <div class="fac-info">
-              <div class="fac-name">성벽 / 방어탑</div>
-              <div class="fac-role">본거지 방어력 증가. 침공 시 방어 전투 참여.</div>
-            </div>
-          </div>
-          <div class="fac-item">
-            <div class="fac-icon fi-ocean">🦸</div>
-            <div class="fac-info">
-              <div class="fac-name">영웅 숙소</div>
-              <div class="fac-role">영웅 관리·휴식·스킬 강화.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 본진 역할 -->
-  <div class="bento">
-    <div class="b-cell s12 ch-amber">
-      <div class="cell-head">
-        <div class="cell-tag">Core Building Rules</div>
-        <div class="cell-title">본진 규칙</div>
-        <div class="cell-sub">본거지 전체를 제어하는 핵심 건물의 역할 정의</div>
-      </div>
-      <div class="cell-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-          <div class="callout ct-amber">
-            <div class="callout-tag">레벨 상한 제어</div>
-            <div class="callout-body">본진 레벨 < 각 시설 레벨 불가. <strong>모든 건물의 최대 레벨 = 본진 레벨</strong>. 업그레이드 병목 설계.</div>
-          </div>
-          <div class="callout ct-coral" style="border-color:rgba(248,114,114,.3);">
-            <div class="callout-tag" style="color:var(--coral);">침공 전투 목표</div>
-            <div class="callout-body">본진 점령·파괴 시 <strong>본거지 기능 일시 제한</strong>. 침공전의 최종 목표이자 방어전의 핵심 거점.</div>
-          </div>
-          <div class="callout ct-ocean" style="border-color:rgba(58,184,245,.3);">
-            <div class="callout-tag" style="color:var(--ocean);">지구 확장</div>
-            <div class="callout-body">본진 레벨업 또는 <strong>특정 조건 달성 시</strong> 지구 범위 확장 가능. 확장 상한·조건은 추후 정의.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ===== SECTION: COMMON ===== -->
-<section class="section" id="s-common">
-
-  <div class="ph">
-    <div class="ph-eyebrow">
-      <div class="ph-tag">FLOW</div>
-      <div class="ph-line"></div>
-    </div>
-    <div class="ph-title">화면 전환 흐름</div>
-    <div class="ph-desc">대륙 뷰에서 줌인하여 전술 뷰까지, 그리고 본거지·거점 화면으로 진입하는 전체 네비게이션 구조.</div>
-    <div class="ph-rule"></div>
-  </div>
-
-  <div class="bento">
-    <div class="b-cell s12 ch-biolum">
-      <div class="cell-head">
-        <div class="cell-tag">Navigation Flow</div>
-        <div class="cell-title">줌 → 화면 진입 흐름</div>
-        <div class="cell-sub">줌 레벨 이동과 오브젝트 클릭으로 이어지는 전체 화면 전환 경로</div>
-      </div>
-      <div class="cell-body">
-        <div class="screen-flow">
-          <div class="sf-step">
-            <div class="sf-icon">🌐</div>
-            <div class="sf-name">대륙 뷰</div>
-            <div class="sf-sub">Lv4 최대 축소</div>
-          </div>
-          <div class="sf-arrow">›</div>
-          <div class="sf-step">
-            <div class="sf-icon">🗺️</div>
-            <div class="sf-name">광역 뷰</div>
-            <div class="sf-sub">Lv3 줌인</div>
-          </div>
-          <div class="sf-arrow">›</div>
-          <div class="sf-step">
-            <div class="sf-icon">⚔️</div>
-            <div class="sf-name">전략 뷰</div>
-            <div class="sf-sub">Lv2 줌인</div>
-          </div>
-          <div class="sf-arrow">›</div>
-          <div class="sf-step">
-            <div class="sf-icon">🔍</div>
-            <div class="sf-name">전술 뷰</div>
-            <div class="sf-sub">Lv1 최대 확대</div>
-          </div>
-          <div class="sf-arrow">›</div>
-          <div class="sf-step" style="border-color:rgba(248,114,114,.4);">
-            <div class="sf-icon">🏯</div>
-            <div class="sf-name">본거지 화면</div>
-            <div class="sf-sub">본거지 타일 클릭</div>
-          </div>
-          <div class="sf-arrow" style="color:var(--coral);">›</div>
-          <div class="sf-step" style="border-color:rgba(246,202,69,.4);">
-            <div class="sf-icon">🏰</div>
-            <div class="sf-name">거점 상세 / 전투</div>
-            <div class="sf-sub">거점 클릭</div>
-          </div>
-        </div>
-
-        <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="callout ct-jade" style="border-color:rgba(53,212,156,.25);">
-            <div class="callout-tag" style="color:var(--jade);">본거지 진입 조건</div>
-            <div class="callout-body" style="font-size:12px;">전술 뷰(Lv1)에서 <strong>본거지 타일 클릭</strong> → 본거지 전용 화면으로 전환. 본거지 화면은 월드맵과 별개의 씬 또는 오버레이 방식 중 선택 필요.</div>
-          </div>
-          <div class="callout ct-amber">
-            <div class="callout-tag">거점 클릭 분기</div>
-            <div class="callout-body" style="font-size:12px;">주요 거점 클릭 시 <strong>거점 상세 팝업</strong> 또는 <strong>전투 화면 진입</strong> 분기. 적 점령 여부·아군 여부에 따라 UI 분기 처리 필요.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ===== SECTION: PENDING ===== -->
-<section class="section" id="s-pending">
-
-  <div class="ph">
-    <div class="ph-eyebrow">
-      <div class="ph-tag">OPEN ISSUES</div>
-      <div class="ph-line"></div>
-    </div>
-    <div class="ph-title">미결 항목</div>
-    <div class="ph-desc">기획 초안 단계에서 정의되지 않은 항목들. 검토 후 후속 오더 시 명시 필요.</div>
-    <div class="ph-rule"></div>
-  </div>
-
-  <div class="pending-grid">
-    <div class="pending-card">
-      <div class="pc-tag">Tile / Scale</div>
-      <div class="pc-name">타일 실제 크기 수치</div>
-      <div class="pc-desc">월드 타일과 본거지 타일 각각의 실제 단위 크기(m, 픽셀, 또는 게임 내 거리 단위) 정의 필요.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">UX / Input</div>
-      <div class="pc-name">줌 레벨 전환 트리거</div>
-      <div class="pc-desc">핀치 줌 수치 범위, 버튼 UI 제공 여부, 레벨 스냅(자동 고정) 적용 여부 결정 필요.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">Server Policy</div>
-      <div class="pc-name">서버 간 이동 정책</div>
-      <div class="pc-desc">대륙 뷰에서 서버 간 이동 가능 여부, 조건, UI 진입 방식 별도 정의 필요.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">Home Base</div>
-      <div class="pc-name">본거지 지구 확장 조건</div>
-      <div class="pc-desc">지구 확장 상한 (최대 타일 수), 확장 트리거 조건, 확장 비용 정의 필요.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">Combat</div>
-      <div class="pc-name">방어전 발생 조건</div>
-      <div class="pc-desc">침공 가능 시간대(쉴드·비전투 시간 여부), 침공 조건(레벨·세력 제한), 방어전 알림 방식 정의 필요.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">World Map</div>
-      <div class="pc-name">부대 주둔 최대 수</div>
-      <div class="pc-desc">월드 타일당 최대 주둔 부대 수 및 점령 임계치 수치. 별도 밸런스 문서에서 정의 예정.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">Scene / UX</div>
-      <div class="pc-name">본거지 화면 구현 방식</div>
-      <div class="pc-desc">월드맵과 완전히 분리된 씬으로 전환할지, 오버레이(팝업) 방식으로 처리할지 결정 필요.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">Combat</div>
-      <div class="pc-name">거점 클릭 UI 분기</div>
-      <div class="pc-desc">적 점령·아군·중립 거점별 클릭 시 동작 분기(팝업 vs 전투 화면 vs 정보 패널) 정의 필요.</div>
-    </div>
-    <div class="pending-card">
-      <div class="pc-tag">Home Base</div>
-      <div class="pc-name">조선소·비행장 조건</div>
-      <div class="pc-desc">해상·공중 유닛 육성 시설 적용 여부, 게임 내 해상·공중 유닛 존재 여부 선행 결정 필요.</div>
-    </div>
-  </div>
-
-</section>
-
-
-<!-- ===== SECTION: SIMULATOR ===== -->
-<section class="section" id="s-simulator">
-
-  <div class="ph">
-    <div class="ph-eyebrow">
-      <div class="ph-tag">SIMULATOR</div>
-      <div class="ph-line"></div>
-    </div>
-    <div class="ph-title">인터랙티브 시뮬레이터</div>
-    <div class="ph-desc">기획 요소를 직접 조작하며 검토. 줌 레벨 전환 규칙과 본거지 타일 레이아웃을 시각적으로 확인.</div>
-    <div class="ph-rule"></div>
-  </div>
-
-  <div class="sim-sub-tabs">
-    <button class="sim-sub-tab active" id="stab-world" onclick="switchSimTab('world')">🌍 월드맵 줌 시뮬레이터</button>
-    <button class="sim-sub-tab" id="stab-base" onclick="switchSimTab('base')">🏯 본거지 레이아웃 시뮬레이터</button>
-  </div>
-
-  <!-- WORLD MAP PANEL -->
-  <div id="simpanel-world" class="sim-panel active">
-    <div class="sim-layout">
-      <div class="sim-main-area">
-        <div class="sim-canvas-box">
-          <canvas id="wmCanvas" width="680" height="420"></canvas>
-          <div class="sim-canvas-footer">
-            <span style="color:var(--t3);font-size:10px;font-family:'JetBrains Mono',monospace;">WORLD MAP — Zoom Simulator</span>
-            <span style="color:var(--ocean);font-size:10px;font-family:'JetBrains Mono',monospace;" id="wmZoomLabel">Lv1 — 전술 뷰</span>
-          </div>
-        </div>
-      </div>
-      <div class="sim-side-panel">
-        <div class="sim-ctrl-block">
-          <div class="sim-ctrl-label">줌 레벨 (6단계)</div>
-          <div class="wm-zoom-btns">
-            <button class="wm-zbtn active" onclick="wmSetZoom(1,this)">
-              <span class="zbtn-lv" style="color:var(--coral);">200%</span>
-              <span class="zbtn-name">근접 뷰</span>
-            </button>
-            <button class="wm-zbtn" onclick="wmSetZoom(2,this)">
-              <span class="zbtn-lv" style="color:var(--amber);">100%</span>
-              <span class="zbtn-name">전략 뷰</span>
-            </button>
-            <button class="wm-zbtn" onclick="wmSetZoom(3,this)">
-              <span class="zbtn-lv" style="color:var(--jade);">50%</span>
-              <span class="zbtn-name">광역 뷰</span>
-            </button>
-            <button class="wm-zbtn" onclick="wmSetZoom(4,this)">
-              <span class="zbtn-lv" style="color:var(--biolum);font-size:12px;">~25%</span>
-              <span class="zbtn-name">지역 뷰</span>
-            </button>
-            <button class="wm-zbtn" onclick="wmSetZoom(5,this)">
-              <span class="zbtn-lv" style="color:var(--ocean);font-size:12px;">~10%</span>
-              <span class="zbtn-name">서버 뷰</span>
-            </button>
-            <button class="wm-zbtn" onclick="wmSetZoom(6,this)">
-              <span class="zbtn-lv" style="color:var(--violet);font-size:10px;">전지적</span>
-              <span class="zbtn-name">멀티서버</span>
-            </button>
-          </div>
-        </div>
-        <div class="sim-info-block" id="wmInfoPanel">
-          <span style="color:var(--t3);font-size:11px;">시뮬레이터 로딩 중...</span>
-        </div>
-        <div class="sim-hover-block" id="wmHoverInfo">
-          <span style="color:var(--t3);font-size:11px;">오브젝트 위에 마우스를 올려보세요</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HOME BASE PANEL -->
-  <div id="simpanel-base" class="sim-panel">
-    <div class="sim-layout">
-      <div class="sim-main-area">
-        <div class="sim-canvas-box">
-          <canvas id="hbCanvas" width="680" height="360"></canvas>
-          <div class="sim-canvas-footer">
-            <span style="color:var(--t3);font-size:10px;font-family:'JetBrains Mono',monospace;">HOME BASE — 궁·선체형 레이아웃 (34×18)</span>
-            <div style="display:flex;gap:8px;">
-              <button class="sim-act-btn" onclick="hbDefenseSim()">⚔️ 방어전 시뮬레이션</button>
-              <button class="sim-act-btn sim-act-btn-sec" onclick="hbReset()">↺ 초기화</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="sim-side-panel">
-        <div class="sim-ctrl-block">
-          <div class="sim-ctrl-label">지구 범례</div>
-          <div class="hb-legend">
-            <div class="hb-leg-item"><span class="hb-leg-dot" style="background:rgba(246,202,69,0.7);"></span>본진 (핵심 건물)</div>
-            <div class="hb-leg-item"><span class="hb-leg-dot" style="background:rgba(53,212,156,0.7);"></span>생산 지구</div>
-            <div class="hb-leg-item"><span class="hb-leg-dot" style="background:rgba(248,114,114,0.7);"></span>병사육성 지구</div>
-            <div class="hb-leg-item"><span class="hb-leg-dot" style="background:rgba(124,143,255,0.7);"></span>외교 지구</div>
-            <div class="hb-leg-item"><span class="hb-leg-dot" style="background:rgba(58,184,245,0.7);"></span>기타 시설 지구</div>
-          </div>
-        </div>
-        <div class="sim-ctrl-block">
-          <div class="sim-ctrl-label">타일 통계</div>
-          <div id="hbStats"><span style="color:var(--t3);font-size:11px;">로딩 중...</span></div>
-        </div>
-        <div class="sim-hover-block" id="hbHoverInfo">
-          <span style="color:var(--t3);font-size:11px;">타일에 마우스를 올려보세요</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-</main>
-
-<!-- SHARED SIM TOOLTIP -->
-<div id="sim-tip" class="sim-tip" style="display:none"></div>
-
-<!-- WM POPUP -->
-<div id="wm-popup" class="wm-popup" style="display:none">
-  <button class="wm-popup-close" onclick="wmHidePopup()">✕</button>
-  <div class="wm-popup-head">
-    <div class="wm-popup-icon" id="wmp-icon">⚔</div>
-    <div>
-      <div class="wm-popup-name" id="wmp-name">—</div>
-      <div class="wm-popup-meta" id="wmp-meta">—</div>
-    </div>
-  </div>
-  <div class="wm-popup-stats" id="wmp-stats"></div>
-  <div class="wm-popup-actions" id="wmp-actions"></div>
-</div>
-
-<footer>
-  AS World — 게임 화면 기획서 v0.1 &nbsp;|&nbsp; 2026.04.15 &nbsp;|&nbsp; 검토 대기
-</footer>
+<canvas id="gameCanvas"></canvas>
+<div id="landscape-warn"><div class="icon">📱</div><div>기기를 세로로 돌려주세요</div></div>
+<div id="powerLabel">⚔ <span id="powerVal">10</span></div>
+<div id="msg"></div>
+<div id="score">💰 <span id="scoreVal">0</span></div>
 
 <script>
-function showSection(id, navBtn) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('s-' + id);
-  if (el) el.classList.add('active');
-  if (navBtn) {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    navBtn.classList.add('active');
-  }
-}
-function setSbActive(el) {
-  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-}
-function toggleGroup(label) {
-  label.closest('.sb-group').classList.toggle('collapsed');
-}
+// ─── Canvas ───
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
 
-// ============================================================
-// SIMULATOR
-// ============================================================
-let wmSim = null, hbSim = null, simInitialized = false;
+// ─── Config ───
+const ROAD_W    = 6;
+const ROAD_HALF = ROAD_W / 2;
+const MARCH_SPD = 4;
 
-function switchSimTab(id) {
-  document.querySelectorAll('.sim-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.sim-sub-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('simpanel-' + id).classList.add('active');
-  document.getElementById('stab-' + id).classList.add('active');
+function getScale() { return Math.min(canvas.width / ROAD_W / 1.75, 58); }
+function playerY()  { return canvas.height * 0.74; }
+
+// World → Screen
+function ws(wx, wz) {
+    const sc = getScale();
+    return {
+        x: canvas.width  / 2 + wx * sc,
+        y: playerY() - (wz - S.marchZ) * sc,
+    };
 }
 
-function initSimulator() {
-  if (simInitialized) return;
-  simInitialized = true;
-  setTimeout(() => {
-    wmSim = new WorldMapSim('wmCanvas');
-    hbSim = new HomeBaseSim('hbCanvas');
-    updateHbStats();
-  }, 60);
-}
+// ─── Pre-render Voronoi caustics ───
+const CAUS_SIZE = 256;
+const causCanvas = document.createElement('canvas');
+causCanvas.width = causCanvas.height = CAUS_SIZE;
+(function() {
+    const cctx   = causCanvas.getContext('2d');
+    const imgD   = cctx.createImageData(CAUS_SIZE, CAUS_SIZE);
+    const d      = imgD.data;
+    const CC     = 7;
+    const hash   = (a, b) => { const v = Math.sin(a*127.1 + b*311.7)*43758.5453; return v - Math.floor(v); };
+    const pts    = [];
+    for (let cy = 0; cy < CC; cy++)
+        for (let cx = 0; cx < CC; cx++)
+            pts.push({ x:(cx+0.15+hash(cx,cy)*0.7)/CC, y:(cy+0.15+hash(cy,cx+17)*0.7)/CC });
 
-function wmSetZoom(lv, btn) {
-  document.querySelectorAll('.wm-zbtn').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  const labels = ['','200% — 전술 뷰','100% — 전략 뷰','50% — 광역 뷰','25% — 대륙일부','10% — 서버전체','전지적 — 멀티서버'];
-  const el = document.getElementById('wmZoomLabel');
-  if (el) el.textContent = labels[lv] || '';
-  if (wmSim) wmSim.setZoom(lv - 1); // lv 1-6 → setZoom 0-5
-}
-
-function hbDefenseSim() { if (hbSim) hbSim.startDefenseSim(); }
-function hbReset() { if (hbSim) hbSim.reset(); }
-
-function updateHbStats() {
-  const el = document.getElementById('hbStats');
-  if (!el || !hbSim) return;
-  const cnt = {};
-  Object.values(hbSim.zones).forEach(z => { cnt[z] = (cnt[z]||0) + 1; });
-  const bc = {};
-  hbSim.buildings.forEach(b => { bc[b.zone] = (bc[b.zone]||0) + 1; });
-  const info = [
-    {k:'core',        name:'본진',       col:'var(--amber)'},
-    {k:'residential', name:'민가·생산',  col:'var(--jade)'},
-    {k:'military',    name:'병사육성',   col:'var(--coral)'},
-    {k:'diplomatic',  name:'외교·연구',  col:'var(--violet)'},
-    {k:'support',     name:'기타 시설',  col:'var(--ocean)'},
-  ];
-  el.innerHTML = info.map(z => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;">
-      <span style="color:${z.col};">${z.name}</span>
-      <div style="display:flex;gap:8px;">
-        <span style="color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:9px;">${bc[z.k]||0}건물</span>
-        <span style="color:var(--t1);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">${cnt[z.k]||0}t</span>
-      </div>
-    </div>`).join('');
-}
-
-// ─── SHARED TOOLTIP ────────────────────────────────────────────────
-function simTipShow(cx, cy, html, acol) {
-  const t = document.getElementById('sim-tip');
-  if(!t) return;
-  t.innerHTML = html;
-  t.style.borderColor = (acol||'#3ab8f5') + '66';
-  t.style.display = 'block';
-  const w = t.offsetWidth, h = t.offsetHeight;
-  const vw = window.innerWidth, vh = window.innerHeight;
-  let x = cx + 16, y = cy - Math.round(h/2);
-  if(x + w > vw - 6) x = cx - w - 16;
-  if(y < 6) y = 6;
-  if(y + h > vh - 6) y = vh - h - 6;
-  t.style.left = x + 'px';
-  t.style.top  = y + 'px';
-}
-function simTipHide() {
-  const t = document.getElementById('sim-tip');
-  if(t) t.style.display = 'none';
-}
-function wmHidePopup() {
-  const p = document.getElementById('wm-popup');
-  if(p) p.style.display = 'none';
-}
-
-// ─── WORLD MAP SIMULATOR ────────────────────────────────────────────
-class WorldMapSim {
-  constructor(id) {
-    this.canvas = document.getElementById(id);
-    if(!this.canvas) return;
-    this.ctx = this.canvas.getContext('2d');
-    this.W = this.canvas.width  || 680;
-    this.H = this.canvas.height || 420;
-
-    this.COLS = 240; this.ROWS = 150;
-    this.TILE_SIZES  = [32, 16, 8, 4, 2];
-    this.ZOOM_LABELS = ['200% · 전술','100% · 전략','50% · 광역','25% · 대륙일부','10% · 서버전체','전지적'];
-
-    this.zoomIdx  = 0;
-    this.prevSize = 32;
-    this.curSize  = 32;
-    this.tgtSize  = 32;
-    this.animT    = 1;
-
-    this.vpCX = 120; this.vpCY = 75;
-    this.fCenters = [{x:48,y:38},{x:148,y:100},{x:192,y:40}];
-    this.mx = -1; this.my = -1;
-    this.ecx = 0; this.ecy = 0;
-    this.hoverTile = null;
-
-    this._genObjects();
-
-    this.canvas.addEventListener('mousemove', e => {
-      const r = this.canvas.getBoundingClientRect();
-      this.mx = e.clientX - r.left; this.my = e.clientY - r.top;
-      this.ecx = e.clientX; this.ecy = e.clientY;
-      this._calcHover();
-      this._updateTip();
-    });
-    this.canvas.addEventListener('mouseleave', () => {
-      this.mx=-1; this.my=-1; this.hoverTile=null;
-      simTipHide();
-      this._updateSidePanel(null);
-    });
-    this.canvas.addEventListener('click', e => { this._onClick(e); });
-    document.addEventListener('click', e => {
-      const pop = document.getElementById('wm-popup');
-      if(pop && !pop.contains(e.target) && e.target !== this.canvas) pop.style.display='none';
-    });
-    this._loop();
-  }
-
-  prand(n) { return ((Math.sin(n * 127.1) * 43758.5453) % 1 + 1) % 1; }
-
-  genTerrain() {
-    const t = [];
-    for (let r = 0; r < this.ROWS; r++) {
-      t[r] = [];
-      for (let c = 0; c < this.COLS; c++) {
-        const bv = this.prand(Math.floor(r/4)*50 + Math.floor(c/4));
-        const tv = this.prand(r*this.COLS + c) * 0.25 + bv * 0.75;
-        t[r][c] = tv > 0.82 ? 2 : tv < 0.13 ? 3 : tv > 0.60 ? 1 : 0;
-      }
+    for (let py = 0; py < CAUS_SIZE; py++) {
+        for (let px = 0; px < CAUS_SIZE; px++) {
+            const i = (py*CAUS_SIZE+px)*4;
+            const u = px/CAUS_SIZE, v = py/CAUS_SIZE;
+            let d1=1e9, d2=1e9;
+            for (const p of pts) {
+                let du=u-p.x, dv=v-p.y;
+                if (du>.5) du-=1; else if (du<-.5) du+=1;
+                if (dv>.5) dv-=1; else if (dv<-.5) dv+=1;
+                const dist=Math.sqrt(du*du+dv*dv);
+                if (dist<d1){d2=d1;d1=dist;}else if(dist<d2)d2=dist;
+            }
+            const edge  = Math.pow(Math.max(0, 1-(d2-d1)*CC*2.8), 3.2);
+            const inner = Math.pow(Math.max(0, 1-d1*CC*2.0), 2) * 0.12;
+            const t = Math.min(1, edge+inner);
+            const br = Math.floor(t*255);
+            d[i]   = Math.min(255, Math.floor(br*0.82));
+            d[i+1] = Math.min(255, br);
+            d[i+2] = Math.min(255, br);
+            d[i+3] = Math.floor(t*220);
+        }
     }
-    return t;
-  }
+    cctx.putImageData(imgD, 0, 0);
+})();
 
-  genTerritories() {
-    const t = [];
-    const C = [{x:.2,y:.3},{x:.55,y:.65},{x:.8,y:.25}];
-    for (let r = 0; r < this.ROWS; r++) {
-      t[r] = [];
-      for (let c = 0; c < this.COLS; c++) {
-        const nx = c/this.COLS, ny = r/this.ROWS;
-        let best = 0, bestD = Infinity;
-        C.forEach((ct,i) => { const d = Math.hypot(nx-ct.x,ny-ct.y); if(d<bestD){bestD=d;best=i;} });
-        t[r][c] = best;
-      }
-    }
-    return t;
-  }
-
-  getObjects() {
-    return [
-      {p:1,type:'castle',  x:140,y:110,label:'수도',    faction:0},
-      {p:1,type:'castle',  x:525,y:95, label:'요새',    faction:2},
-      {p:1,type:'alliance',x:350,y:295,label:'연합본부', faction:1},
-      {p:2,type:'resource',x:82, y:215,label:'광산',    faction:0},
-      {p:2,type:'resource',x:610,y:160,label:'광산',    faction:2},
-      {p:2,type:'resource',x:445,y:370,label:'농장',    faction:1},
-      {p:2,type:'homebase',x:200,y:335,label:'본거지',  faction:0},
-      {p:2,type:'homebase',x:585,y:310,label:'본거지',  faction:2},
-      {p:3,type:'army',    x:210,y:185,label:'대부대',  faction:0},
-      {p:3,type:'army',    x:415,y:230,label:'연합군',  faction:1},
-      {p:4,type:'scout',   x:128,y:162,label:'정찰대',  faction:0},
-      {p:4,type:'scout',   x:312,y:128,label:'소부대',  faction:2},
-      {p:4,type:'scout',   x:550,y:245,label:'정찰',    faction:2},
-      {p:4,type:'scout',   x:390,y:385,label:'소부대',  faction:1},
-      {p:5,type:'monster', x:95, y:295,label:'몬스터',  faction:-1},
-      {p:5,type:'monster', x:478,y:408,label:'야생',    faction:-1},
-      {p:5,type:'monster', x:645,y:178,label:'몬스터',  faction:-1},
-      {p:5,type:'deco',    x:270,y:392,label:'장식물',  faction:-1},
-    ];
-  }
-
-  maxZoom(p) { return [0,4,3,3,2,1][p]; }
-  isVisible(obj, z) { return z <= this.maxZoom(obj.p) + 0.3; }
-
-  setZoom(lv) {
-    if (this.animId) cancelAnimationFrame(this.animId);
-    this.startZoom = this.zoom; this.targetZoom = lv; this.lerpT = 0;
-    this.animStep(); this.updateInfoPanel(lv);
-  }
-
-  animStep() {
-    this.lerpT = Math.min(1, this.lerpT + 0.07);
-    const e = 1 - Math.pow(1 - this.lerpT, 3);
-    this.zoom = this.startZoom + (this.targetZoom - this.startZoom) * e;
-    this.render(this.zoom);
-    if (this.lerpT < 1) this.animId = requestAnimationFrame(() => this.animStep());
-    else { this.zoom = this.targetZoom; this.render(this.zoom); }
-  }
-
-  render(z) {
-    const ctx = this.ctx;
-    ctx.clearRect(0,0,this.W,this.H);
-    ctx.fillStyle = '#020912'; ctx.fillRect(0,0,this.W,this.H);
-    this.drawTerrain(z); this.drawTerritory(z); this.drawGrid(z);
-    if (z >= 3.5) this.drawContLabels(z);
-    this.objs.forEach(o => this.drawObj(o, z));
-    if (this.hovObj && this.isVisible(this.hovObj, z)) this.drawHoverRing(this.hovObj);
-  }
-
-  drawTerrain(z) {
-    const a = Math.max(0, 1 - (z-1)*0.6); if (a <= 0.01) return;
-    const tc = ['#0c2618','#081c10','#0f1a2a','#040e1c'];
-    this.ctx.globalAlpha = a;
-    for (let r=0;r<this.ROWS;r++) for (let c=0;c<this.COLS;c++) {
-      this.ctx.fillStyle = tc[this.terrain[r][c]];
-      this.ctx.fillRect(c*this.TILE, r*this.TILE, this.TILE, this.TILE);
-    }
-    this.ctx.globalAlpha = 1;
-  }
-
-  drawTerritory(z) {
-    const a = Math.max(0, Math.min(0.38, (z-1.8)*0.22)); if (a <= 0.01) return;
-    const fc = ['rgba(248,114,114,','rgba(58,184,245,','rgba(53,212,156,'];
-    for (let r=0;r<this.ROWS;r++) for (let c=0;c<this.COLS;c++) {
-      this.ctx.fillStyle = fc[this.terr[r][c]] + a + ')';
-      this.ctx.fillRect(c*this.TILE, r*this.TILE, this.TILE, this.TILE);
-    }
-  }
-
-  drawGrid(z) {
-    const a = Math.max(0, 0.09-(z-1)*0.03); if (a<=0.005) return;
-    const ctx = this.ctx;
-    ctx.strokeStyle = `rgba(58,184,245,${a})`; ctx.lineWidth = 0.5;
+// ─── Draw helpers ───
+function roundRect(x, y, w, h, r) {
     ctx.beginPath();
-    for (let c=0;c<=this.COLS;c++){ctx.moveTo(c*this.TILE,0);ctx.lineTo(c*this.TILE,this.H);}
-    for (let r=0;r<=this.ROWS;r++){ctx.moveTo(0,r*this.TILE);ctx.lineTo(this.W,r*this.TILE);}
+    ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w,y, x+w,y+r); ctx.lineTo(x+w,y+h-r);
+    ctx.quadraticCurveTo(x+w,y+h, x+w-r,y+h); ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h, x,y+h-r); ctx.lineTo(x,y+r);
+    ctx.quadraticCurveTo(x,y, x+r,y); ctx.closePath();
+}
+
+// ─── Draw: Water ───
+let causOffX = 0, causOffY = 0;
+function drawWater(dt) {
+    const W = canvas.width, H = canvas.height;
+
+    // 베이스 그라디언트
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0,   '#001f33');
+    grad.addColorStop(0.45,'#005588');
+    grad.addColorStop(1,   '#0088bb');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // 코스틱 타일
+    causOffX = (causOffX + dt * 16) % CAUS_SIZE;
+    causOffY = (causOffY + dt * 11 + MARCH_SPD * dt * getScale() * 0.25) % CAUS_SIZE;
+    ctx.save();
+    ctx.globalAlpha = 0.46;
+    ctx.globalCompositeOperation = 'lighter';
+    const ox = -(causOffX % CAUS_SIZE), oy = -(causOffY % CAUS_SIZE);
+    for (let tx = ox - CAUS_SIZE; tx < W + CAUS_SIZE; tx += CAUS_SIZE)
+        for (let ty = oy - CAUS_SIZE; ty < H + CAUS_SIZE; ty += CAUS_SIZE)
+            ctx.drawImage(causCanvas, tx, ty);
+    ctx.restore();
+
+    // 물결 하이라이트 라인
+    const t = performance.now() / 1000;
+    const scrollOff = (S.marchZ * getScale() * 0.3) % 90;
+    ctx.save();
+    ctx.globalAlpha = 0.10;
+    ctx.strokeStyle = '#aaeeff';
+    ctx.lineWidth = 1.2;
+    for (let i = 0; i < 14; i++) {
+        const baseY = ((i*90 + scrollOff) % (H+90)) - 45;
+        ctx.beginPath();
+        for (let x = 0; x <= W; x += 5) {
+            const y = baseY
+                + Math.sin(x*0.014 + t*1.4 + i*0.9) * 7
+                + Math.sin(x*0.032 + t*0.8 + i*1.5) * 3;
+            x===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+// ─── Draw: Road ───
+function drawRoad() {
+    const W = canvas.width, H = canvas.height, sc = getScale();
+    const rl = W/2 - ROAD_HALF*sc;
+    const rr = W/2 + ROAD_HALF*sc;
+    const rw = rr - rl;
+
+    // 측면 그림자 (물에 자연스럽게 합체)
+    const sg = ctx.createLinearGradient(rl-24, 0, rl, 0);
+    sg.addColorStop(0,'rgba(0,0,0,0)'); sg.addColorStop(1,'rgba(0,0,0,0.38)');
+    ctx.fillStyle = sg; ctx.fillRect(rl-24, 0, 24, H);
+    const sgr = ctx.createLinearGradient(rr, 0, rr+24, 0);
+    sgr.addColorStop(0,'rgba(0,0,0,0.38)'); sgr.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = sgr; ctx.fillRect(rr, 0, 24, H);
+
+    // 도로 면
+    ctx.fillStyle = '#546E7A';
+    ctx.fillRect(rl, 0, rw, H);
+
+    // 도로 미세 텍스처 라인
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 1;
+    for (let x = rl+sc; x < rr; x += sc*0.8) {
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+    }
+
+    // 가장자리 하이라이트
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(rl,0); ctx.lineTo(rl,H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rr,0); ctx.lineTo(rr,H); ctx.stroke();
+
+    // 중앙 점선
+    const dashL = sc*1.1, gapL = sc*0.75, period = dashL+gapL;
+    const offset = (S.marchZ * sc) % period;
+    ctx.setLineDash([dashL, gapL]);
+    ctx.lineDashOffset = offset;
+    ctx.strokeStyle = 'rgba(255,255,255,0.32)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, H); ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+// ─── Draw: Gate ───
+function drawGate(g) {
+    const p = ws(g.x, g.z);
+    if (p.y < -70 || p.y > canvas.height+70) return;
+    const sc = getScale();
+    const gw = sc*2.1, gh = sc*1.9;
+    const isPlus = g.value > 0;
+
+    ctx.save();
+    ctx.shadowColor = isPlus ? '#66FF88' : '#FF5566';
+    ctx.shadowBlur  = 20;
+    roundRect(p.x-gw/2, p.y-gh/2, gw, gh, 10);
+    ctx.fillStyle   = isPlus ? 'rgba(46,125,50,0.80)' : 'rgba(183,28,28,0.80)';
+    ctx.fill();
+    ctx.strokeStyle = isPlus ? '#A5D6A7' : '#EF9A9A';
+    ctx.lineWidth   = 2;
     ctx.stroke();
-  }
+    ctx.shadowBlur  = 0;
+    ctx.restore();
 
-  drawContLabels(z) {
-    const a = Math.min(1,(z-3.5)*2)*0.5;
-    const ctx = this.ctx; ctx.globalAlpha = a;
-    ctx.font = 'bold 16px "Outfit"'; ctx.textAlign = 'center';
-    ctx.fillStyle = '#f87272'; ctx.fillText('서버 A', 145, 370);
-    ctx.fillStyle = '#3ab8f5'; ctx.fillText('서버 B', 370, 400);
-    ctx.fillStyle = '#35d49c'; ctx.fillText('서버 C', 570, 55);
-    ctx.globalAlpha = 1;
-  }
-
-  fcol(f) { return ['#f87272','#3ab8f5','#35d49c','#7c8fff'][f>=0?f:3]; }
-
-  objAlpha(obj, z) { const mx = this.maxZoom(obj.p); return Math.min(1, Math.max(0, (mx - z + 0.4)/0.4)); }
-
-  drawObj(obj, z) {
-    const a = this.objAlpha(obj, z); if (a < 0.01) return;
-    const ctx = this.ctx; ctx.globalAlpha = a;
-    const col = this.fcol(obj.faction);
-    if      (obj.p===1) this.drawP1(obj, z, col);
-    else if (obj.p===2) this.drawP2(obj, z, col);
-    else if (obj.p===3) this.drawP3(obj, z, col);
-    else if (obj.p===4) this.drawP4(obj, z, col);
-    else                this.drawP5(obj, z, col);
-    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-  }
-
-  drawP1(obj, z, col) {
-    const ctx = this.ctx, sz = z<=2?14:z<=3?12:10;
-    ctx.shadowColor = col; ctx.shadowBlur = sz;
-    ctx.fillStyle = col;
-    ctx.beginPath(); ctx.moveTo(obj.x,obj.y-sz*1.1); ctx.lineTo(obj.x+sz*.65,obj.y); ctx.lineTo(obj.x,obj.y+sz*1.1); ctx.lineTo(obj.x-sz*.65,obj.y); ctx.closePath(); ctx.fill();
-    ctx.shadowBlur = 0; ctx.fillStyle = '#020912';
-    ctx.beginPath(); ctx.moveTo(obj.x,obj.y-sz*.5); ctx.lineTo(obj.x+sz*.3,obj.y); ctx.lineTo(obj.x,obj.y+sz*.5); ctx.lineTo(obj.x-sz*.3,obj.y); ctx.closePath(); ctx.fill();
-    if (z<=3.3) { ctx.fillStyle=col; ctx.font=`bold ${z<=1?11:9}px "Noto Sans KR"`; ctx.textAlign='center'; ctx.fillText(obj.label,obj.x,obj.y+sz+12); }
-  }
-
-  drawP2(obj, z, col) {
-    const ctx = this.ctx, sz = z<=1?8:z<=2?6:5;
-    ctx.shadowColor = col; ctx.shadowBlur = 8;
-    ctx.strokeStyle = col; ctx.lineWidth = z<=1?2:1.5; ctx.fillStyle = 'rgba(2,9,18,.85)';
-    ctx.beginPath(); ctx.arc(obj.x,obj.y,sz,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    ctx.shadowBlur = 0; ctx.fillStyle = col;
-    ctx.beginPath(); ctx.arc(obj.x,obj.y,sz*.42,0,Math.PI*2); ctx.fill();
-    if (z<=2.3) { ctx.fillStyle=col; ctx.font='9px "Noto Sans KR"'; ctx.textAlign='center'; ctx.fillText(obj.label,obj.x,obj.y+sz+10); }
-  }
-
-  drawP3(obj, z, col) {
-    const ctx = this.ctx;
-    if (z > 2.7) {
-      ctx.fillStyle=col; ctx.shadowColor=col; ctx.shadowBlur=4;
-      ctx.beginPath(); ctx.arc(obj.x,obj.y,5,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0; return;
-    }
-    const sz = 8;
-    ctx.strokeStyle=col; ctx.lineWidth=z<=1?2:1.5; ctx.shadowColor=col; ctx.shadowBlur=6;
-    ctx.strokeRect(obj.x-sz,obj.y-sz,sz*2,sz*2);
-    ctx.beginPath(); ctx.moveTo(obj.x-sz*.6,obj.y-sz*.6); ctx.lineTo(obj.x+sz*.6,obj.y+sz*.6);
-    ctx.moveTo(obj.x+sz*.6,obj.y-sz*.6); ctx.lineTo(obj.x-sz*.6,obj.y+sz*.6); ctx.stroke();
-    ctx.shadowBlur=0;
-    if (z<=1.5) { ctx.fillStyle=col; ctx.font='9px "Noto Sans KR"'; ctx.textAlign='center'; ctx.fillText(obj.label,obj.x,obj.y+sz+10); }
-  }
-
-  drawP4(obj, z, col) {
-    const ctx = this.ctx, sz = z<=1?5:4;
-    ctx.fillStyle=col; ctx.shadowColor=col; ctx.shadowBlur=4;
-    ctx.beginPath(); ctx.arc(obj.x,obj.y,sz,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
-    if (z<=1.2) { const prev=ctx.globalAlpha; ctx.globalAlpha*=.7; ctx.fillStyle=col; ctx.font='8px "Noto Sans KR"'; ctx.textAlign='center'; ctx.fillText(obj.label,obj.x,obj.y+sz+8); ctx.globalAlpha=prev; }
-  }
-
-  drawP5(obj, z, col) {
-    const ctx = this.ctx, sz = 3.5;
-    const prev=ctx.globalAlpha; ctx.globalAlpha*=.45;
-    ctx.strokeStyle=col; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(obj.x-sz,obj.y-sz); ctx.lineTo(obj.x+sz,obj.y+sz);
-    ctx.moveTo(obj.x+sz,obj.y-sz); ctx.lineTo(obj.x-sz,obj.y+sz); ctx.stroke();
-    ctx.globalAlpha=prev;
-  }
-
-  drawHoverRing(obj) {
-    const ctx = this.ctx;
-    ctx.strokeStyle='rgba(255,255,255,.45)'; ctx.lineWidth=1.5;
-    ctx.setLineDash([3,3]);
-    ctx.beginPath(); ctx.arc(obj.x,obj.y,20,0,Math.PI*2); ctx.stroke();
-    ctx.setLineDash([]);
-  }
-
-  onMouseMove(e) {
-    const rect = this.canvas.getBoundingClientRect();
-    const mx = (e.clientX-rect.left)*(this.W/rect.width);
-    const my = (e.clientY-rect.top)*(this.H/rect.height);
-    const prev = this.hovObj; this.hovObj = null;
-    for (const obj of this.objs) {
-      if (!this.isVisible(obj,this.zoom)) continue;
-      if (Math.hypot(mx-obj.x,my-obj.y)<20) { this.hovObj=obj; break; }
-    }
-    if (this.hovObj !== prev) { this.render(this.zoom); this.updateHoverInfo(); }
-  }
-
-  updateHoverInfo() {
-    const el = document.getElementById('wmHoverInfo'); if (!el) return;
-    if (!this.hovObj) { el.innerHTML='<span style="color:var(--t3);font-size:11px;">오브젝트 위에 마우스를 올려보세요</span>'; return; }
-    const obj = this.hovObj;
-    const pc = ['','#f87272','#f6ca45','#35d49c','#3ab8f5','#7c8fff'];
-    const tl = {castle:'요새·거점',alliance:'연합 본부',resource:'자원 노드',homebase:'유저 본거지',army:'대규모 부대',scout:'소규모 유닛',monster:'야생 몬스터',deco:'장식물'};
-    const lv = this.maxZoom(obj.p);
-    el.innerHTML = `
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.08em;margin-bottom:5px;">OBJECT INFO</div>
-      <div style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;color:${pc[obj.p]};margin-bottom:2px;">${obj.label}</div>
-      <div style="font-size:11px;color:var(--t2);margin-bottom:8px;">${tl[obj.type]||obj.type}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-        <span style="background:${pc[obj.p]}22;border:1px solid ${pc[obj.p]}44;border-radius:4px;padding:2px 7px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:${pc[obj.p]};">P${obj.p}</span>
-        <span style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:2px 7px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t2);">Lv1~Lv${lv}</span>
-      </div>
-      <div style="font-size:10px;color:var(--t3);">현재 Lv${Math.round(this.zoom)} — ${this.isVisible(obj,Math.round(this.zoom))?'<span style="color:var(--jade);">표시됨</span>':'<span style="color:var(--coral);">비노출</span>'}</div>`;
-  }
-
-  updateInfoPanel(lv) {
-    const el = document.getElementById('wmInfoPanel'); if (!el) return;
-    const vis = this.objs.filter(o=>this.isVisible(o,lv));
-    const hid = this.objs.filter(o=>!this.isVisible(o,lv));
-    const ln = ['','근접 뷰 200%','전략 뷰 100%','광역 뷰 50%','지역 뷰 ~25%'];
-    const ld = ['','건물·유닛 풀 렌더, 본거지 진입 가능','시설 인지 가능, 유닛 아이콘 통합','P4·P5 비노출, 세력 영역 오버레이','P1만 표시, 월드 1/4 조망'];
-    const pc = ['','#f87272','#f6ca45','#35d49c','#3ab8f5','#7c8fff'];
-    const rows = [1,2,3,4,5].map(p => {
-      const cnt = vis.filter(o=>o.p===p).length;
-      const tot = this.objs.filter(o=>o.p===p).length;
-      return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(58,184,245,.06);">
-        <div style="width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:${pc[p]}20;border:1px solid ${pc[p]}40;font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;color:${pc[p]};flex-shrink:0;">P${p}</div>
-        <div style="flex:1;font-size:11.5px;font-weight:600;color:${cnt>0?'var(--t1)':'var(--t3)'};">${cnt>0?cnt+'개 표시':'비노출'}</div>
-        ${tot-cnt>0?`<div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--coral);">-${tot-cnt}</div>`:''}
-      </div>`;
-    }).join('');
-    el.innerHTML = `
-      <div style="margin-bottom:10px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.08em;margin-bottom:3px;">CURRENT LEVEL</div>
-        <div style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;color:var(--ocean);">Lv${lv} — ${ln[lv]}</div>
-        <div style="font-size:11px;color:var(--t2);margin-top:3px;line-height:1.5;">${ld[lv]}</div>
-      </div>
-      <div style="border-top:1px solid var(--bdrm);padding-top:10px;margin-bottom:10px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.08em;margin-bottom:6px;">OBJECTS ${vis.length}/${this.objs.length}</div>
-        ${rows}
-      </div>
-      ${hid.length>0?`<div style="background:rgba(248,114,114,.06);border:1px solid rgba(248,114,114,.18);border-radius:8px;padding:8px 10px;"><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--coral);margin-bottom:3px;">HIDDEN</div><div style="font-size:10.5px;color:var(--t2);">${hid.map(o=>o.label).join(', ')}</div></div>`:`<div style="background:rgba(53,212,156,.06);border:1px solid rgba(53,212,156,.2);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--jade);">✓ 모든 오브젝트 표시 중</div>`}`;
-  }
+    ctx.fillStyle    = '#fff';
+    ctx.font         = `bold ${Math.round(sc*0.68)}px "Arial Black",Arial`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText((isPlus?'+':'')+g.value, p.x, p.y);
 }
 
-// ============================================================
-// HOME BASE SIMULATOR
-// ============================================================
-class HomeBaseSim {
-  constructor(id) {
-    this.canvas = document.getElementById(id);
-    if (!this.canvas) return;
-    this.ctx = this.canvas.getContext('2d');
-    this.COLS = 34; this.ROWS = 18; this.TILE = 20;
-    this.W = 680; this.H = 360;
-    this.canvas.width = this.W; this.canvas.height = this.H;
-    this.cx = 17; this.cy = 9;
-    this.zones = this.genZones(); this.buildings = this.genBuildings();
-    this.defAnim = null; this.attackers = []; this.hovTile = null;
-    this.canvas.addEventListener('mousemove', e => this.onMouseMove(e));
-    this.canvas.addEventListener('mouseleave', () => { this.hovTile=null; this.render(); this.updateHoverInfo(); });
-    this.render();
-  }
+// ─── Draw: Soldier ───
+function drawSoldier(s) {
+    const sc  = getScale();
+    const r   = sc * 0.28;
+    const bob = Math.abs(Math.sin(s.bobPhase)) * 2;
+    const px  = canvas.width/2 + (S.armyX + s.offX) * sc;
+    const py  = playerY() + s.offZ * sc - bob;
 
-  genZones() {
-    // 궁·선체형: 수평으로 긴 타원형 동심 구조
-    // sx=0.5 (수평 가중치 절반) → 수평으로 2배 넓어지는 타원
-    // 본진 중심 → 생산 → 병사 → 외교 → 기타(외벽/선체) 순
-    const z = {}, cx=this.cx, cy=this.cy;
-    const sx=0.5, sy=1.0;
-    for (let r=0;r<this.ROWS;r++) for (let c=0;c<this.COLS;c++) {
-      const dx=c-cx, dy=r-cy, key=`${c},${r}`;
-      if (Math.abs(dx)<=1 && Math.abs(dy)<=1) { z[key]='core'; continue; }
-      const dist = Math.abs(dx)*sx + Math.abs(dy)*sy;
-      if      (dist<=3.0) z[key]='production';  // 내전 (생활·생산)
-      else if (dist<=5.5) z[key]='military';    // 무위 (병사육성)
-      else if (dist<=7.5) z[key]='diplomatic';  // 외조 (외교)
-      else                z[key]='support';     // 외성·선체 (기타)
+    // 그림자
+    ctx.beginPath();
+    ctx.ellipse(px, py+r+1, r*0.85, r*0.28, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.fill();
+
+    // 몸통
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2);
+    ctx.fillStyle = '#2196F3'; ctx.fill();
+    ctx.strokeStyle = '#90CAF9'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // 헬멧
+    ctx.beginPath(); ctx.arc(px, py-r*0.22, r*0.58, Math.PI, 0);
+    ctx.fillStyle = '#1565C0'; ctx.fill();
+}
+
+// ─── Draw: Enemy ───
+function drawEnemy(e) {
+    const sc = getScale();
+    const p  = ws(e.x, e.z);
+    if (p.y < -70 || p.y > canvas.height+70) return;
+    const r  = e.type==='boss' ? sc*0.52 : sc*0.29;
+
+    // 그림자
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y+r+1, r*0.85, r*0.28, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.fill();
+
+    // 몸통
+    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+    ctx.fillStyle   = e.type==='boss' ? '#E57373' : '#E53935';
+    ctx.fill();
+    ctx.strokeStyle = e.type==='boss' ? '#FFCDD2' : '#B71C1C';
+    ctx.lineWidth   = e.type==='boss' ? 2.5 : 1.5;
+    ctx.stroke();
+
+    // HP 바
+    const bw = r*3.6, bh = 4;
+    const bx = p.x-bw/2, by = p.y-r-11;
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    roundRect(bx-1, by-1, bw+2, bh+2, 2); ctx.fill();
+    ctx.fillStyle = '#F44336';
+    const fw = Math.max(0, bw*(e.hp/e.maxHp));
+    if (fw>0) { roundRect(bx, by, fw, bh, 2); ctx.fill(); }
+
+    // HP 숫자
+    const fs = Math.max(9, Math.round(r*0.88));
+    ctx.fillStyle    = '#fff';
+    ctx.font         = `bold ${fs}px Arial`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(e.hp, p.x, p.y);
+}
+
+// ─── Draw: Projectile ───
+function drawProjectile(proj) {
+    const sc = getScale();
+    const px = canvas.width/2 + proj.x * sc;
+    const py = playerY() - (proj.z - S.marchZ) * sc;
+    if (py < -12 || py > canvas.height+12) return;
+
+    // 꼬리
+    ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py + sc*0.42);
+    ctx.strokeStyle = 'rgba(255,210,0,0.38)'; ctx.lineWidth = 2.5; ctx.stroke();
+
+    // 탄환
+    ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI*2);
+    ctx.fillStyle = '#FFD700'; ctx.fill();
+    ctx.strokeStyle = '#FFFDE7'; ctx.lineWidth = 1; ctx.stroke();
+}
+
+// ─── Game State ───
+const S = {
+    score: 0, marchZ: 0,
+    mouseX: 0, armyX: 0,
+    soldiers: [], enemies: [], gates: [], projectiles: [],
+    nextSpawnZ: 15, wave: 0, gameOver: false,
+};
+
+// ─── Input ───
+function updatePointer(cx) {
+    const worldX = (cx - canvas.width/2) / getScale();
+    S.mouseX = Math.max(-ROAD_HALF+0.8, Math.min(ROAD_HALF-0.8, worldX));
+}
+canvas.addEventListener('mousemove',  e => updatePointer(e.clientX));
+canvas.addEventListener('touchmove',  e => { e.preventDefault(); updatePointer(e.touches[0].clientX); }, { passive:false });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); updatePointer(e.touches[0].clientX); }, { passive:false });
+
+// ─── Messages ───
+let msgTimer = 0;
+function showMsg(text) {
+    const el = document.getElementById('msg');
+    el.textContent = text; el.style.opacity = 1; msgTimer = 1.2;
+}
+
+// ─── Army ───
+function arrangeCircle() {
+    const alive = S.soldiers.filter(s=>s.alive);
+    const n = alive.length;
+    if (!n) return;
+    if (n===1) { alive[0].offX=0; alive[0].offZ=0; return; }
+    let placed=0, ring=0;
+    while (placed < n) {
+        ring++;
+        const radius = ring * 0.45;
+        const count  = Math.min(Math.floor(2*Math.PI*radius/0.5), n-placed);
+        for (let i=0; i<count && placed<n; i++) {
+            const angle = (i/count)*Math.PI*2;
+            alive[placed].offX = Math.cos(angle)*radius;
+            alive[placed].offZ = Math.sin(angle)*radius;
+            placed++;
+        }
     }
-    return z;
-  }
+}
+function totalPower() { return S.soldiers.filter(s=>s.alive).length*(10+Math.floor(S.score/500)); }
+function updatePower() { document.getElementById('powerVal').textContent = totalPower(); }
 
-  genBuildings() {
-    // 좌우 대칭 배치 — 궁궐 중심축 또는 선체 중심선 기준
-    const cx=this.cx, cy=this.cy;
-    return [
-      // 본진 (핵심)
-      {c:cx,     r:cy,    label:'본진',    zone:'core',       emoji:'🏯'},
-      // 생산 지구 — 본진 직근 (내전)
-      {c:cx-4,   r:cy,    label:'농장',    zone:'production', emoji:'🌾'},
-      {c:cx+4,   r:cy,    label:'광산',    zone:'production', emoji:'⛏️'},
-      {c:cx-2,   r:cy-2,  label:'공방',    zone:'production', emoji:'🔨'},
-      {c:cx+2,   r:cy+2,  label:'연구소',  zone:'production', emoji:'🔬'},
-      // 병사육성 지구 — 생산 바깥 고리
-      {c:cx-7,   r:cy,    label:'막사',    zone:'military',   emoji:'🛡️'},
-      {c:cx+7,   r:cy,    label:'마구간',  zone:'military',   emoji:'🐎'},
-      {c:cx-3,   r:cy-3,  label:'훈련장',  zone:'military',   emoji:'🏋️'},
-      {c:cx+3,   r:cy+3,  label:'병기고',  zone:'military',   emoji:'🗃️'},
-      // 외교 지구 — 뱃머리·선미 구간 / 궁 외조
-      {c:cx-12,  r:cy,    label:'연합본부', zone:'diplomatic', emoji:'🏛️'},
-      {c:cx+12,  r:cy,    label:'사절단',  zone:'diplomatic', emoji:'📜'},
-      {c:cx-9,   r:cy-2,  label:'교역소',  zone:'diplomatic', emoji:'🏪'},
-      {c:cx+9,   r:cy+2,  label:'시장',    zone:'diplomatic', emoji:'🛒'},
-      // 기타 시설 — 외성·외벽·선체 끝
-      {c:cx-16,  r:cy,    label:'의무대',  zone:'support',    emoji:'⚕️'},
-      {c:cx+16,  r:cy,    label:'감시탑',  zone:'support',    emoji:'🗼'},
-      {c:cx-14,  r:cy-5,  label:'성벽',    zone:'support',    emoji:'🏰'},
-      {c:cx+14,  r:cy+5,  label:'영웅숙소', zone:'support',   emoji:'🦸'},
-    ];
-  }
+function addSoldiers(count) {
+    for (let i=0;i<count;i++)
+        S.soldiers.push({ offX:0, offZ:0, bobPhase:Math.random()*Math.PI*2, alive:true, atkTimer:Math.random()*0.3 });
+    arrangeCircle(); updatePower();
+}
+function removeSoldiers(count) {
+    const alive = S.soldiers.filter(s=>s.alive);
+    const n = Math.min(count, alive.length);
+    for (let i=0;i<n;i++) alive[alive.length-1-i].alive = false;
+    S.soldiers = S.soldiers.filter(s=>s.alive);
+    arrangeCircle(); updatePower();
+}
 
-  zoneStyle(z) {
-    return ({
-      core:       {fill:'rgba(246,202,69,.20)', border:'rgba(246,202,69,.5)',  hov:'rgba(246,202,69,.35)'},
-      production: {fill:'rgba(53,212,156,.08)', border:'rgba(53,212,156,.22)', hov:'rgba(53,212,156,.22)'},
-      military:   {fill:'rgba(248,114,114,.08)',border:'rgba(248,114,114,.22)',hov:'rgba(248,114,114,.22)'},
-      diplomatic: {fill:'rgba(124,143,255,.08)',border:'rgba(124,143,255,.22)',hov:'rgba(124,143,255,.22)'},
-      support:    {fill:'rgba(58,184,245,.08)', border:'rgba(58,184,245,.22)', hov:'rgba(58,184,245,.22)'},
-    })[z] || {fill:'rgba(255,255,255,.02)',border:'rgba(255,255,255,.06)',hov:'rgba(255,255,255,.1)'};
-  }
-
-  render() {
-    const ctx=this.ctx, T=this.TILE;
-    ctx.clearRect(0,0,this.W,this.H);
-    ctx.fillStyle='#020912'; ctx.fillRect(0,0,this.W,this.H);
-    for (let r=0;r<this.ROWS;r++) for (let c=0;c<this.COLS;c++) {
-      const z=this.zones[`${c},${r}`], s=this.zoneStyle(z);
-      const hov=this.hovTile&&this.hovTile.c===c&&this.hovTile.r===r;
-      ctx.fillStyle=hov?s.hov:s.fill; ctx.fillRect(c*T,r*T,T,T);
-      ctx.strokeStyle=s.border; ctx.lineWidth=0.5; ctx.strokeRect(c*T,r*T,T,T);
+// ─── Spawn ───
+function spawnSegment(z) {
+    S.wave++;
+    const numPairs = 1 + Math.floor(S.wave/3);
+    for (let i=0; i<numPairs; i++) {
+        const gz   = z + i*8;
+        const pv   = Math.ceil(Math.random()*3 + S.wave*0.3);
+        const mv   = -Math.ceil(Math.random()*2 + S.wave*0.2);
+        const flip = Math.random()>.5;
+        S.gates.push({ z:gz, x:-1.5, value:flip?pv:mv, hit:false });
+        S.gates.push({ z:gz, x: 1.5, value:flip?mv:pv, hit:false });
     }
-    this.drawZoneLabels(); this.drawWalls(); this.drawCoreGlow();
-    this.buildings.forEach(b=>{ if(b.c>=0&&b.c<this.COLS&&b.r>=0&&b.r<this.ROWS) this.drawBuilding(b); });
-    this.attackers.forEach(a=>this.drawAttacker(a));
-  }
+    const ez = z + numPairs*8 + 5;
+    const ne = Math.min(2+S.wave, 12);
+    for (let i=0; i<ne; i++) {
+        const hp = 10 + S.wave*8;
+        S.enemies.push({
+            x: (Math.random()-0.5)*(ROAD_W-2),
+            z: ez + i*1.5 + Math.random(),
+            hp, maxHp:hp, alive:true, type:'enemy', atkTimer:0,
+        });
+    }
+    if (S.wave%5===0) {
+        const bhp = 100 + S.wave*40;
+        S.enemies.push({ x:0, z:ez+ne*1.5+4, hp:bhp, maxHp:bhp, alive:true, type:'boss', atkTimer:0 });
+    }
+    S.nextSpawnZ = ez + ne*1.5 + 12;
+}
 
-  drawZoneLabels() {
-    // 레이블은 각 지구의 중심축(수평) 위·아래에 배치
-    const ctx=this.ctx, T=this.TILE, cx=this.cx*T+T/2, cy=this.cy*T+T/2;
-    ctx.font='bold 9px "Noto Sans KR"'; ctx.textAlign='center';
-    // 생산: 본진 위 (코어 상단)
-    // 병사: 본진 좌우 (수평 중간)
-    // 외교: 좌·우 끝 구간
-    // 기타: 모서리
-    [{t:'생산 지구',       x:cx,         y:cy-T*3.2,  c:'rgba(53,212,156,.5)'},
-     {t:'병사육성 지구',   x:cx,         y:cy+T*4.5,  c:'rgba(248,114,114,.5)'},
-     {t:'외교',           x:cx-T*11,    y:cy-T*1.5,  c:'rgba(124,143,255,.5)'},
-     {t:'외교',           x:cx+T*11,    y:cy+T*1.5,  c:'rgba(124,143,255,.5)'},
-     {t:'기타',           x:cx-T*15.5,  y:cy-T*3,    c:'rgba(58,184,245,.4)'},
-     {t:'기타',           x:cx+T*15.5,  y:cy+T*3,    c:'rgba(58,184,245,.4)'},
-    ].forEach(l=>{ ctx.fillStyle=l.c; ctx.fillText(l.t,l.x,l.y); });
-  }
+// ─── Init ───
+addSoldiers(1);
+spawnSegment(S.nextSpawnZ);
 
-  drawWalls() {
-    const ctx=this.ctx, T=this.TILE;
-    const cx=this.cx*T+T/2, cy=this.cy*T+T/2;
+// ─── Game Loop ───
+let lastTime = performance.now();
+function animate(timestamp) {
+    requestAnimationFrame(animate);
+    const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+    lastTime = timestamp;
 
-    // 수평 중심축선 (선체 용골 / 궁궐 중심축)
-    ctx.strokeStyle='rgba(246,202,69,.15)'; ctx.lineWidth=1; ctx.setLineDash([4,6]);
-    ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(this.W,cy); ctx.stroke();
-    ctx.setLineDash([]);
+    drawWater(dt);
+    drawRoad();
 
-    // 타원형 지구 경계선 (생산/병사/외교 경계 강조)
-    const drawEllipseBorder = (rx, ry, color) => {
-      ctx.strokeStyle=color; ctx.lineWidth=0.8; ctx.globalAlpha=0.35;
-      ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2); ctx.stroke();
-      ctx.globalAlpha=1;
-    };
-    drawEllipseBorder(T*6.5,  T*3.2, '#35d49c');  // 생산 경계
-    drawEllipseBorder(T*11.5, T*5.6, '#f87272');  // 병사 경계
-    drawEllipseBorder(T*15.5, T*7.6, '#7c8fff');  // 외교 경계
+    if (S.gameOver) return;
 
-    // 좌우 끝 (선수·선미) 강조 마커
-    [0, this.W-T].forEach(x => {
-      ctx.strokeStyle='rgba(58,184,245,.3)'; ctx.lineWidth=2;
-      ctx.beginPath(); ctx.moveTo(x+T/2, cy-T*2); ctx.lineTo(x+T/2, cy+T*2); ctx.stroke();
+    const alive = S.soldiers.filter(s=>s.alive);
+    if (!alive.length) {
+        S.gameOver = true;
+        showMsg('GAME OVER');
+        setTimeout(()=>location.reload(), 2500);
+        return;
+    }
+
+    // March
+    S.marchZ += MARCH_SPD * dt;
+    S.armyX   = S.mouseX;
+    alive.forEach(s => s.bobPhase += dt*7);
+
+    // Gate collisions
+    const hitZs = new Set();
+    S.gates = S.gates.filter(g => {
+        if (!g.hit) {
+            if (Math.abs(g.z-S.marchZ)<1.2 && Math.abs(g.x-S.armyX)<1.5) {
+                g.value>0 ? (addSoldiers(g.value),  showMsg(`+${g.value} 병사!`))
+                          : (removeSoldiers(-g.value), showMsg(`${g.value} 병사`));
+                hitZs.add(g.z); return false;
+            }
+        }
+        return g.z >= S.marchZ - 15;
     });
-  }
+    if (hitZs.size>0) S.gates = S.gates.filter(g => !hitZs.has(g.z));
 
-  drawCoreGlow() {
-    const ctx=this.ctx, T=this.TILE, cx=this.cx*T+T/2, cy=this.cy*T+T/2;
-    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,T*3);
-    g.addColorStop(0,'rgba(246,202,69,.12)'); g.addColorStop(1,'rgba(246,202,69,0)');
-    ctx.fillStyle=g; ctx.fillRect(0,0,this.W,this.H);
-  }
+    // Soldier attack
+    const visibleEnemies = S.enemies.filter(e=>e.alive);
+    alive.forEach(s => {
+        s.atkTimer += dt;
+        if (s.atkTimer < 0.4) return;
+        let nearest=null, nd=Infinity;
+        visibleEnemies.forEach(e => {
+            const dz = e.z - S.marchZ;
+            if (dz>0 && dz<12 && dz<nd) { nd=dz; nearest=e; }
+        });
+        if (nearest) {
+            s.atkTimer = 0;
+            S.projectiles.push({ x: S.armyX+s.offX, z: S.marchZ+s.offZ });
+        }
+    });
 
-  rrect(ctx,x,y,w,h,r){
-    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
-    ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
-    ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
-    ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
-    ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-  }
+    // Enemy movement + melee
+    visibleEnemies.forEach(e => {
+        const dz = e.z - S.marchZ;
+        if (dz>0 && dz<15) {
+            e.z -= (e.type==='boss' ? 1.5 : 2.5) * dt;
+            e.x += (S.armyX - e.x) * 0.5 * dt;
+        }
+        const cr = e.type==='boss' ? 2.5 : 1.5;
+        if (Math.abs(e.z-S.marchZ)<cr && Math.abs(e.x-S.armyX)<cr) {
+            e.atkTimer += dt;
+            if (e.atkTimer > 0.3) {
+                e.atkTimer = 0;
+                removeSoldiers(e.type==='boss' ? 2 : 1);
+                if (!S.soldiers.filter(s=>s.alive).length) return;
+            }
+        }
+    });
+    S.enemies = S.enemies.filter(e => e.alive && e.z >= S.marchZ-5);
 
-  drawBuilding(b) {
-    const ctx=this.ctx, T=this.TILE;
-    const x=b.c*T+T/2, y=b.r*T+T/2, isCore=b.zone==='core';
-    const zc={core:'#f6ca45',production:'#35d49c',military:'#f87272',diplomatic:'#7c8fff',support:'#3ab8f5'};
-    const col=zc[b.zone]||'#dff0ff', sz=isCore?T*.72:T*.62;
-    ctx.shadowColor=col; ctx.shadowBlur=isCore?14:5;
-    ctx.fillStyle=isCore?'rgba(246,202,69,.22)':'rgba(7,24,46,.9)';
-    ctx.strokeStyle=col; ctx.lineWidth=isCore?2:1.2;
-    this.rrect(ctx,x-sz/2,y-sz/2,sz,sz,3); ctx.fill(); ctx.stroke();
-    ctx.shadowBlur=0;
-    ctx.font=`${isCore?T*.42:T*.4}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(b.emoji,x,y); ctx.textBaseline='alphabetic';
-  }
+    // Projectiles
+    const dmg = 5 + Math.floor(S.score/300);
+    S.projectiles = S.projectiles.filter(p => {
+        p.z += 25 * dt;
+        if (p.z > S.marchZ+22) return false;
+        for (const e of S.enemies) {
+            if (!e.alive) continue;
+            const dx=e.x-p.x, dz=e.z-p.z;
+            if (dx*dx+dz*dz < 0.55*0.55) {
+                e.hp -= dmg;
+                if (e.hp<=0) {
+                    e.alive = false;
+                    S.score += e.type==='boss' ? 200 : 30;
+                    document.getElementById('scoreVal').textContent = S.score;
+                    updatePower();
+                }
+                return false;
+            }
+        }
+        return true;
+    });
 
-  drawAttacker(a) {
-    if (a.dead) return;
-    const ctx=this.ctx;
-    ctx.fillStyle='rgba(248,114,114,.9)'; ctx.strokeStyle='#f87272'; ctx.lineWidth=1.5;
-    ctx.shadowColor='#f87272'; ctx.shadowBlur=8;
-    ctx.beginPath(); ctx.arc(a.x,a.y,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    ctx.shadowBlur=0;
-  }
+    // Spawn next segment
+    if (S.marchZ+30 > S.nextSpawnZ) spawnSegment(S.nextSpawnZ);
 
-  onMouseMove(e) {
-    const rect=this.canvas.getBoundingClientRect();
-    const mx=(e.clientX-rect.left)*(this.W/rect.width);
-    const my=(e.clientY-rect.top)*(this.H/rect.height);
-    const c=Math.floor(mx/this.TILE), r=Math.floor(my/this.TILE);
-    this.hovTile=(c>=0&&c<this.COLS&&r>=0&&r<this.ROWS)?{c,r}:null;
-    this.render(); this.updateHoverInfo();
-  }
+    // Msg timer
+    if (msgTimer>0) { msgTimer-=dt; if(msgTimer<=0) document.getElementById('msg').style.opacity=0; }
 
-  updateHoverInfo() {
-    const el=document.getElementById('hbHoverInfo'); if(!el) return;
-    if (!this.hovTile) { el.innerHTML='<span style="color:var(--t3);font-size:11px;">타일에 마우스를 올려보세요</span>'; return; }
-    const {c,r}=this.hovTile, zone=this.zones[`${c},${r}`];
-    const bld=this.buildings.find(b=>b.c===c&&b.r===r);
-    const zn={core:'본진',production:'생산 지구',military:'병사육성 지구',diplomatic:'외교 지구',support:'기타 시설 지구'};
-    const zc={core:'var(--amber)',production:'var(--jade)',military:'var(--coral)',diplomatic:'var(--violet)',support:'var(--ocean)'};
-    const dx=c-this.cx, dy=r-this.cy;
-    el.innerHTML = `
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.08em;margin-bottom:5px;">TILE INFO</div>
-      <div style="font-size:12.5px;font-weight:700;color:${zc[zone]};margin-bottom:2px;">${zn[zone]||zone}</div>
-      <div style="font-size:10px;color:var(--t3);margin-bottom:6px;font-family:'JetBrains Mono',monospace;">col ${c}, row ${r} | Δ(${dx>0?'+':''}${dx}, ${dy>0?'+':''}${dy})</div>
-      ${bld?`<div style="background:rgba(255,255,255,.04);border:1px solid var(--bdrm);border-radius:8px;padding:8px 10px;">
-        <div style="font-size:13px;margin-bottom:2px;">${bld.emoji} <strong style="color:var(--t1);">${bld.label}</strong></div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);">BUILDING</div></div>`
-      :`<div style="font-size:11px;color:var(--t3);">빈 타일 (건설 가능)</div>`}`;
-  }
-
-  startDefenseSim() {
-    if (this.defAnim) cancelAnimationFrame(this.defAnim);
-    this.attackers = [];
-    const T=this.TILE, cx=this.cx*T+T/2, cy=this.cy*T+T/2;
-    for (let i=0;i<14;i++) {
-      const side=i%4; let x,y;
-      if (side===0){x=T+Math.random()*(this.W-2*T);y=T;}
-      else if(side===1){x=this.W-T;y=T+Math.random()*(this.H-2*T);}
-      else if(side===2){x=T+Math.random()*(this.W-2*T);y=this.H-T;}
-      else{x=T;y=T+Math.random()*(this.H-2*T);}
-      const angle=Math.atan2(cy-y,cx-x), spd=1.0+Math.random()*0.7;
-      this.attackers.push({x,y,vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,dead:false,delay:i*10});
-    }
-    let frame=0;
-    const go=()=>{
-      frame++;
-      let alive=false;
-      this.attackers.forEach(a=>{
-        if(frame<a.delay||a.dead) return;
-        alive=true; a.x+=a.vx; a.y+=a.vy;
-        if(Math.hypot(a.x-cx,a.y-cy)<T*2.6) a.dead=true;
-      });
-      this.render();
-      if(alive||frame<120) this.defAnim=requestAnimationFrame(go);
-      else{ this.attackers=[]; this.render(); }
-    };
-    this.defAnim=requestAnimationFrame(go);
-  }
-
-  reset() {
-    if(this.defAnim) cancelAnimationFrame(this.defAnim);
-    this.attackers=[]; this.render();
-  }
+    // ─── Render objects ───
+    S.gates.forEach(g => drawGate(g));
+    S.enemies.forEach(e => { if(e.alive) drawEnemy(e); });
+    S.projectiles.forEach(p => drawProjectile(p));
+    alive.forEach(s => drawSoldier(s));
 }
-</script>
 
+requestAnimationFrame(animate);
+</script>
 </body>
 </html>
